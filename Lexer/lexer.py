@@ -64,7 +64,7 @@ class Lexer:
     t_RSQBRACKET = r'\]'
     t_COMMA = r'\,'
     t_SEMICOLON = r'\;'
-    t_ignore =''
+    t_ignore =' '
 
     def t_DECIMAL(self, t):
         r'\d+'
@@ -97,7 +97,7 @@ class Lexer:
         return self.lexer.token()
 
 
-data = '''FUNC factorial
+data = '''FUNC function
 VARIANT a
 VARIANT b
 VARIANT c
