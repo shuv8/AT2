@@ -57,7 +57,7 @@ class Lexer:
     t_ASSIGNMENT = r'\='
     t_PLUS = r'\+'
     t_MINUS = r'\-'
-    t_DOUBLEQUOTE = r'\"'
+    #t_DOUBLEQUOTE = r'\"'
     t_LBRACE = r'\{'
     t_RBRACE = r'\}'
     t_LSQBRACKET = r'\['
@@ -72,8 +72,9 @@ class Lexer:
         return t
 
     def t_LETTERS(self, t):
-        r'(?<=\")\S+(?=\")'
+        r'\".*\"'
         t.type = reserved.get(t.value, 'LETTERS')
+        t.value = str(t.value).strip('\"')
         return t
 
     def t_NAME(self, t):
@@ -98,7 +99,7 @@ class Lexer:
 
 
 data = '''FUNC function
-VARIANT a
+VARIANT a = {{12, "   ", TRUE;}}
 VARIANT b
 VARIANT c
 IFNHIGH PARAM, 1
