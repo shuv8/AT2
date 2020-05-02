@@ -48,7 +48,7 @@ class Lexer:
         self.lexer = lex.lex(module=self)
 
     tokens = ['DECIMAL', 'NAME', 'ASSIGNMENT',
-              'PLUS', 'MINUS', 'DOUBLEQUOTE',
+              'PLUS', 'MINUS',
               'LETTERS', 'LBRACE', 'RBRACE',
               'LSQBRACKET', 'RSQBRACKET',
               'COMMA', 'SEMICOLON', 'NEWLINE'
@@ -57,7 +57,6 @@ class Lexer:
     t_ASSIGNMENT = r'\='
     t_PLUS = r'\+'
     t_MINUS = r'\-'
-    #t_DOUBLEQUOTE = r'\"'
     t_LBRACE = r'\{'
     t_RBRACE = r'\}'
     t_LSQBRACKET = r'\['
