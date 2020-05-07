@@ -4,9 +4,10 @@ import sys
 from typing import List, Dict, Tuple, Any
 
 from Lexer.lexer import lexer
+from SyntaxTree.Tree import TreeNode
 
 
-class Parser():
+class Parser(object):
     tokens = lexer.tokens
 
     def __init__(self):
@@ -24,4 +25,26 @@ class Parser():
 
     def p_program(self, p):
         """program : statements"""
-        #p[0] = node(...)
+        p[0] = TreeNode('program', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+    def p_statements(self, p):
+        """statements : statements statement
+                        | statement"""
+        if len(p) == 2:
+            p[0] = TreeNode('statements', children=[p[1]])
+        else:
+            p[0] = TreeNode('statements', children=[p[1], p[2]])
+
+    def p_statement(self, p):
+        """statement : declaration NEWLINE
+                        | assignment NEWLINE
+                        | convert NEWLINE
+                        | while NEWLINE
+                        | until NEWLINE
+                        | if NEWLINE
+                        | command NEWLINE
+                        | function NEWLINE
+                        | Function_call NEWLINE"""
+        p[0] = p[1]
+
+
