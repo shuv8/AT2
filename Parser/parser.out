@@ -1,0 +1,810 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    BOOL
+    CALL
+    COMMAND
+    CONVERT
+    DIGIT
+    DIGITIZE
+    ENDFUNC
+    ENDIF
+    ENDU
+    ENDW
+    FUNC
+    IFHIGH
+    IFLESS
+    IFNHIGH
+    IFNLESS
+    IFNZERO
+    IFZERO
+    PARAM
+    RETURN
+    STRING
+    TO
+    UNTIL
+    WHILE
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> statements
+Rule 2     statements -> statements statement
+Rule 3     statements -> statement
+Rule 4     statement -> declaration NEWLINE
+Rule 5     declaration -> VARIANT variant
+Rule 6     declaration -> VARIANT variant ASSIGNMENT init_lists
+Rule 7     variant -> NAME
+Rule 8     variant -> NAME varsize
+Rule 9     varsize -> LSQBRACKET expression RSQBRACKET
+Rule 10    varsize -> LSQBRACKET expression COMMA expression RSQBRACKET
+Rule 11    init_lists -> LBRACE init_lists init_list RBRACE
+Rule 12    init_lists -> LBRACE init_list RBRACE
+Rule 13    init_list -> LBRACE inits RBRACE
+Rule 14    init_list -> LBRACE RBRACE
+Rule 15    inits -> inits init
+Rule 16    inits -> init
+Rule 17    init -> expressions COMMA expression SEMICOLON
+Rule 18    init -> expression SEMICOLON
+Rule 19    expressions -> expressions COMMA expression
+Rule 20    expressions -> expression
+Rule 21    expression -> math_expression
+Rule 22    expression -> const
+Rule 23    expression -> variant
+Rule 24    math_expression -> expression PLUS expression
+Rule 25    math_expression -> MINUS expression
+Rule 26    const -> TRUE
+Rule 27    const -> FALSE
+Rule 28    const -> DECIMAL
+Rule 29    const -> LETTERS
+
+Terminals, with rules where they appear
+
+ASSIGNMENT           : 6
+BOOL                 : 
+CALL                 : 
+COMMA                : 10 17 19
+COMMAND              : 
+CONVERT              : 
+DECIMAL              : 28
+DIGIT                : 
+DIGITIZE             : 
+ENDFUNC              : 
+ENDIF                : 
+ENDU                 : 
+ENDW                 : 
+FALSE                : 27
+FUNC                 : 
+IFHIGH               : 
+IFLESS               : 
+IFNHIGH              : 
+IFNLESS              : 
+IFNZERO              : 
+IFZERO               : 
+LBRACE               : 11 12 13 14
+LETTERS              : 29
+LSQBRACKET           : 9 10
+MINUS                : 25
+NAME                 : 7 8
+NEWLINE              : 4
+PARAM                : 
+PLUS                 : 24
+RBRACE               : 11 12 13 14
+RETURN               : 
+RSQBRACKET           : 9 10
+SEMICOLON            : 17 18
+STRING               : 
+TO                   : 
+TRUE                 : 26
+UNTIL                : 
+VARIANT              : 5 6
+WHILE                : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+const                : 22
+declaration          : 4
+expression           : 9 10 10 17 18 19 20 24 24 25
+expressions          : 17 19
+init                 : 15 16
+init_list            : 11 12
+init_lists           : 6 11
+inits                : 13 15
+math_expression      : 21
+program              : 0
+statement            : 2 3
+statements           : 1 2
+variant              : 5 6 23
+varsize              : 8
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . statements
+    (2) statements -> . statements statement
+    (3) statements -> . statement
+    (4) statement -> . declaration NEWLINE
+    (5) declaration -> . VARIANT variant
+    (6) declaration -> . VARIANT variant ASSIGNMENT init_lists
+
+    VARIANT         shift and go to state 5
+
+    program                        shift and go to state 1
+    statements                     shift and go to state 2
+    statement                      shift and go to state 3
+    declaration                    shift and go to state 4
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> statements .
+    (2) statements -> statements . statement
+    (4) statement -> . declaration NEWLINE
+    (5) declaration -> . VARIANT variant
+    (6) declaration -> . VARIANT variant ASSIGNMENT init_lists
+
+    $end            reduce using rule 1 (program -> statements .)
+    VARIANT         shift and go to state 5
+
+    statement                      shift and go to state 6
+    declaration                    shift and go to state 4
+
+state 3
+
+    (3) statements -> statement .
+
+    VARIANT         reduce using rule 3 (statements -> statement .)
+    $end            reduce using rule 3 (statements -> statement .)
+
+
+state 4
+
+    (4) statement -> declaration . NEWLINE
+
+    NEWLINE         shift and go to state 7
+
+
+state 5
+
+    (5) declaration -> VARIANT . variant
+    (6) declaration -> VARIANT . variant ASSIGNMENT init_lists
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    NAME            shift and go to state 9
+
+    variant                        shift and go to state 8
+
+state 6
+
+    (2) statements -> statements statement .
+
+    VARIANT         reduce using rule 2 (statements -> statements statement .)
+    $end            reduce using rule 2 (statements -> statements statement .)
+
+
+state 7
+
+    (4) statement -> declaration NEWLINE .
+
+    VARIANT         reduce using rule 4 (statement -> declaration NEWLINE .)
+    $end            reduce using rule 4 (statement -> declaration NEWLINE .)
+
+
+state 8
+
+    (5) declaration -> VARIANT variant .
+    (6) declaration -> VARIANT variant . ASSIGNMENT init_lists
+
+    NEWLINE         reduce using rule 5 (declaration -> VARIANT variant .)
+    ASSIGNMENT      shift and go to state 10
+
+
+state 9
+
+    (7) variant -> NAME .
+    (8) variant -> NAME . varsize
+    (9) varsize -> . LSQBRACKET expression RSQBRACKET
+    (10) varsize -> . LSQBRACKET expression COMMA expression RSQBRACKET
+
+    ASSIGNMENT      reduce using rule 7 (variant -> NAME .)
+    NEWLINE         reduce using rule 7 (variant -> NAME .)
+    RSQBRACKET      reduce using rule 7 (variant -> NAME .)
+    COMMA           reduce using rule 7 (variant -> NAME .)
+    PLUS            reduce using rule 7 (variant -> NAME .)
+    SEMICOLON       reduce using rule 7 (variant -> NAME .)
+    LSQBRACKET      shift and go to state 12
+
+    varsize                        shift and go to state 11
+
+state 10
+
+    (6) declaration -> VARIANT variant ASSIGNMENT . init_lists
+    (11) init_lists -> . LBRACE init_lists init_list RBRACE
+    (12) init_lists -> . LBRACE init_list RBRACE
+
+    LBRACE          shift and go to state 14
+
+    init_lists                     shift and go to state 13
+
+state 11
+
+    (8) variant -> NAME varsize .
+
+    ASSIGNMENT      reduce using rule 8 (variant -> NAME varsize .)
+    NEWLINE         reduce using rule 8 (variant -> NAME varsize .)
+    RSQBRACKET      reduce using rule 8 (variant -> NAME varsize .)
+    COMMA           reduce using rule 8 (variant -> NAME varsize .)
+    PLUS            reduce using rule 8 (variant -> NAME varsize .)
+    SEMICOLON       reduce using rule 8 (variant -> NAME varsize .)
+
+
+state 12
+
+    (9) varsize -> LSQBRACKET . expression RSQBRACKET
+    (10) varsize -> LSQBRACKET . expression COMMA expression RSQBRACKET
+    (21) expression -> . math_expression
+    (22) expression -> . const
+    (23) expression -> . variant
+    (24) math_expression -> . expression PLUS expression
+    (25) math_expression -> . MINUS expression
+    (26) const -> . TRUE
+    (27) const -> . FALSE
+    (28) const -> . DECIMAL
+    (29) const -> . LETTERS
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    MINUS           shift and go to state 19
+    TRUE            shift and go to state 20
+    FALSE           shift and go to state 21
+    DECIMAL         shift and go to state 22
+    LETTERS         shift and go to state 23
+    NAME            shift and go to state 9
+
+    expression                     shift and go to state 15
+    math_expression                shift and go to state 16
+    const                          shift and go to state 17
+    variant                        shift and go to state 18
+
+state 13
+
+    (6) declaration -> VARIANT variant ASSIGNMENT init_lists .
+
+    NEWLINE         reduce using rule 6 (declaration -> VARIANT variant ASSIGNMENT init_lists .)
+
+
+state 14
+
+    (11) init_lists -> LBRACE . init_lists init_list RBRACE
+    (12) init_lists -> LBRACE . init_list RBRACE
+    (11) init_lists -> . LBRACE init_lists init_list RBRACE
+    (12) init_lists -> . LBRACE init_list RBRACE
+    (13) init_list -> . LBRACE inits RBRACE
+    (14) init_list -> . LBRACE RBRACE
+
+    LBRACE          shift and go to state 24
+
+    init_lists                     shift and go to state 25
+    init_list                      shift and go to state 26
+
+state 15
+
+    (9) varsize -> LSQBRACKET expression . RSQBRACKET
+    (10) varsize -> LSQBRACKET expression . COMMA expression RSQBRACKET
+    (24) math_expression -> expression . PLUS expression
+
+    RSQBRACKET      shift and go to state 27
+    COMMA           shift and go to state 28
+    PLUS            shift and go to state 29
+
+
+state 16
+
+    (21) expression -> math_expression .
+
+    RSQBRACKET      reduce using rule 21 (expression -> math_expression .)
+    COMMA           reduce using rule 21 (expression -> math_expression .)
+    PLUS            reduce using rule 21 (expression -> math_expression .)
+    SEMICOLON       reduce using rule 21 (expression -> math_expression .)
+
+
+state 17
+
+    (22) expression -> const .
+
+    RSQBRACKET      reduce using rule 22 (expression -> const .)
+    COMMA           reduce using rule 22 (expression -> const .)
+    PLUS            reduce using rule 22 (expression -> const .)
+    SEMICOLON       reduce using rule 22 (expression -> const .)
+
+
+state 18
+
+    (23) expression -> variant .
+
+    RSQBRACKET      reduce using rule 23 (expression -> variant .)
+    COMMA           reduce using rule 23 (expression -> variant .)
+    PLUS            reduce using rule 23 (expression -> variant .)
+    SEMICOLON       reduce using rule 23 (expression -> variant .)
+
+
+state 19
+
+    (25) math_expression -> MINUS . expression
+    (21) expression -> . math_expression
+    (22) expression -> . const
+    (23) expression -> . variant
+    (24) math_expression -> . expression PLUS expression
+    (25) math_expression -> . MINUS expression
+    (26) const -> . TRUE
+    (27) const -> . FALSE
+    (28) const -> . DECIMAL
+    (29) const -> . LETTERS
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    MINUS           shift and go to state 19
+    TRUE            shift and go to state 20
+    FALSE           shift and go to state 21
+    DECIMAL         shift and go to state 22
+    LETTERS         shift and go to state 23
+    NAME            shift and go to state 9
+
+    expression                     shift and go to state 30
+    math_expression                shift and go to state 16
+    const                          shift and go to state 17
+    variant                        shift and go to state 18
+
+state 20
+
+    (26) const -> TRUE .
+
+    RSQBRACKET      reduce using rule 26 (const -> TRUE .)
+    COMMA           reduce using rule 26 (const -> TRUE .)
+    PLUS            reduce using rule 26 (const -> TRUE .)
+    SEMICOLON       reduce using rule 26 (const -> TRUE .)
+
+
+state 21
+
+    (27) const -> FALSE .
+
+    RSQBRACKET      reduce using rule 27 (const -> FALSE .)
+    COMMA           reduce using rule 27 (const -> FALSE .)
+    PLUS            reduce using rule 27 (const -> FALSE .)
+    SEMICOLON       reduce using rule 27 (const -> FALSE .)
+
+
+state 22
+
+    (28) const -> DECIMAL .
+
+    RSQBRACKET      reduce using rule 28 (const -> DECIMAL .)
+    COMMA           reduce using rule 28 (const -> DECIMAL .)
+    PLUS            reduce using rule 28 (const -> DECIMAL .)
+    SEMICOLON       reduce using rule 28 (const -> DECIMAL .)
+
+
+state 23
+
+    (29) const -> LETTERS .
+
+    RSQBRACKET      reduce using rule 29 (const -> LETTERS .)
+    COMMA           reduce using rule 29 (const -> LETTERS .)
+    PLUS            reduce using rule 29 (const -> LETTERS .)
+    SEMICOLON       reduce using rule 29 (const -> LETTERS .)
+
+
+state 24
+
+    (11) init_lists -> LBRACE . init_lists init_list RBRACE
+    (12) init_lists -> LBRACE . init_list RBRACE
+    (13) init_list -> LBRACE . inits RBRACE
+    (14) init_list -> LBRACE . RBRACE
+    (11) init_lists -> . LBRACE init_lists init_list RBRACE
+    (12) init_lists -> . LBRACE init_list RBRACE
+    (13) init_list -> . LBRACE inits RBRACE
+    (14) init_list -> . LBRACE RBRACE
+    (15) inits -> . inits init
+    (16) inits -> . init
+    (17) init -> . expressions COMMA expression SEMICOLON
+    (18) init -> . expression SEMICOLON
+    (19) expressions -> . expressions COMMA expression
+    (20) expressions -> . expression
+    (21) expression -> . math_expression
+    (22) expression -> . const
+    (23) expression -> . variant
+    (24) math_expression -> . expression PLUS expression
+    (25) math_expression -> . MINUS expression
+    (26) const -> . TRUE
+    (27) const -> . FALSE
+    (28) const -> . DECIMAL
+    (29) const -> . LETTERS
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    RBRACE          shift and go to state 31
+    LBRACE          shift and go to state 24
+    MINUS           shift and go to state 19
+    TRUE            shift and go to state 20
+    FALSE           shift and go to state 21
+    DECIMAL         shift and go to state 22
+    LETTERS         shift and go to state 23
+    NAME            shift and go to state 9
+
+    init_lists                     shift and go to state 25
+    init_list                      shift and go to state 26
+    inits                          shift and go to state 32
+    init                           shift and go to state 33
+    expressions                    shift and go to state 34
+    expression                     shift and go to state 35
+    math_expression                shift and go to state 16
+    const                          shift and go to state 17
+    variant                        shift and go to state 18
+
+state 25
+
+    (11) init_lists -> LBRACE init_lists . init_list RBRACE
+    (13) init_list -> . LBRACE inits RBRACE
+    (14) init_list -> . LBRACE RBRACE
+
+    LBRACE          shift and go to state 36
+
+    init_list                      shift and go to state 37
+
+state 26
+
+    (12) init_lists -> LBRACE init_list . RBRACE
+
+    RBRACE          shift and go to state 38
+
+
+state 27
+
+    (9) varsize -> LSQBRACKET expression RSQBRACKET .
+
+    ASSIGNMENT      reduce using rule 9 (varsize -> LSQBRACKET expression RSQBRACKET .)
+    NEWLINE         reduce using rule 9 (varsize -> LSQBRACKET expression RSQBRACKET .)
+    RSQBRACKET      reduce using rule 9 (varsize -> LSQBRACKET expression RSQBRACKET .)
+    COMMA           reduce using rule 9 (varsize -> LSQBRACKET expression RSQBRACKET .)
+    PLUS            reduce using rule 9 (varsize -> LSQBRACKET expression RSQBRACKET .)
+    SEMICOLON       reduce using rule 9 (varsize -> LSQBRACKET expression RSQBRACKET .)
+
+
+state 28
+
+    (10) varsize -> LSQBRACKET expression COMMA . expression RSQBRACKET
+    (21) expression -> . math_expression
+    (22) expression -> . const
+    (23) expression -> . variant
+    (24) math_expression -> . expression PLUS expression
+    (25) math_expression -> . MINUS expression
+    (26) const -> . TRUE
+    (27) const -> . FALSE
+    (28) const -> . DECIMAL
+    (29) const -> . LETTERS
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    MINUS           shift and go to state 19
+    TRUE            shift and go to state 20
+    FALSE           shift and go to state 21
+    DECIMAL         shift and go to state 22
+    LETTERS         shift and go to state 23
+    NAME            shift and go to state 9
+
+    expression                     shift and go to state 39
+    math_expression                shift and go to state 16
+    const                          shift and go to state 17
+    variant                        shift and go to state 18
+
+state 29
+
+    (24) math_expression -> expression PLUS . expression
+    (21) expression -> . math_expression
+    (22) expression -> . const
+    (23) expression -> . variant
+    (24) math_expression -> . expression PLUS expression
+    (25) math_expression -> . MINUS expression
+    (26) const -> . TRUE
+    (27) const -> . FALSE
+    (28) const -> . DECIMAL
+    (29) const -> . LETTERS
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    MINUS           shift and go to state 19
+    TRUE            shift and go to state 20
+    FALSE           shift and go to state 21
+    DECIMAL         shift and go to state 22
+    LETTERS         shift and go to state 23
+    NAME            shift and go to state 9
+
+    expression                     shift and go to state 40
+    math_expression                shift and go to state 16
+    const                          shift and go to state 17
+    variant                        shift and go to state 18
+
+state 30
+
+    (25) math_expression -> MINUS expression .
+    (24) math_expression -> expression . PLUS expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+    RSQBRACKET      reduce using rule 25 (math_expression -> MINUS expression .)
+    COMMA           reduce using rule 25 (math_expression -> MINUS expression .)
+    SEMICOLON       reduce using rule 25 (math_expression -> MINUS expression .)
+    PLUS            shift and go to state 29
+
+  ! PLUS            [ reduce using rule 25 (math_expression -> MINUS expression .) ]
+
+
+state 31
+
+    (14) init_list -> LBRACE RBRACE .
+
+    RBRACE          reduce using rule 14 (init_list -> LBRACE RBRACE .)
+
+
+state 32
+
+    (13) init_list -> LBRACE inits . RBRACE
+    (15) inits -> inits . init
+    (17) init -> . expressions COMMA expression SEMICOLON
+    (18) init -> . expression SEMICOLON
+    (19) expressions -> . expressions COMMA expression
+    (20) expressions -> . expression
+    (21) expression -> . math_expression
+    (22) expression -> . const
+    (23) expression -> . variant
+    (24) math_expression -> . expression PLUS expression
+    (25) math_expression -> . MINUS expression
+    (26) const -> . TRUE
+    (27) const -> . FALSE
+    (28) const -> . DECIMAL
+    (29) const -> . LETTERS
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    RBRACE          shift and go to state 41
+    MINUS           shift and go to state 19
+    TRUE            shift and go to state 20
+    FALSE           shift and go to state 21
+    DECIMAL         shift and go to state 22
+    LETTERS         shift and go to state 23
+    NAME            shift and go to state 9
+
+    init                           shift and go to state 42
+    expressions                    shift and go to state 34
+    expression                     shift and go to state 35
+    math_expression                shift and go to state 16
+    const                          shift and go to state 17
+    variant                        shift and go to state 18
+
+state 33
+
+    (16) inits -> init .
+
+    RBRACE          reduce using rule 16 (inits -> init .)
+    MINUS           reduce using rule 16 (inits -> init .)
+    TRUE            reduce using rule 16 (inits -> init .)
+    FALSE           reduce using rule 16 (inits -> init .)
+    DECIMAL         reduce using rule 16 (inits -> init .)
+    LETTERS         reduce using rule 16 (inits -> init .)
+    NAME            reduce using rule 16 (inits -> init .)
+
+
+state 34
+
+    (17) init -> expressions . COMMA expression SEMICOLON
+    (19) expressions -> expressions . COMMA expression
+
+    COMMA           shift and go to state 43
+
+
+state 35
+
+    (18) init -> expression . SEMICOLON
+    (20) expressions -> expression .
+    (24) math_expression -> expression . PLUS expression
+
+    SEMICOLON       shift and go to state 44
+    COMMA           reduce using rule 20 (expressions -> expression .)
+    PLUS            shift and go to state 29
+
+
+state 36
+
+    (13) init_list -> LBRACE . inits RBRACE
+    (14) init_list -> LBRACE . RBRACE
+    (15) inits -> . inits init
+    (16) inits -> . init
+    (17) init -> . expressions COMMA expression SEMICOLON
+    (18) init -> . expression SEMICOLON
+    (19) expressions -> . expressions COMMA expression
+    (20) expressions -> . expression
+    (21) expression -> . math_expression
+    (22) expression -> . const
+    (23) expression -> . variant
+    (24) math_expression -> . expression PLUS expression
+    (25) math_expression -> . MINUS expression
+    (26) const -> . TRUE
+    (27) const -> . FALSE
+    (28) const -> . DECIMAL
+    (29) const -> . LETTERS
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    RBRACE          shift and go to state 31
+    MINUS           shift and go to state 19
+    TRUE            shift and go to state 20
+    FALSE           shift and go to state 21
+    DECIMAL         shift and go to state 22
+    LETTERS         shift and go to state 23
+    NAME            shift and go to state 9
+
+    inits                          shift and go to state 32
+    init                           shift and go to state 33
+    expressions                    shift and go to state 34
+    expression                     shift and go to state 35
+    math_expression                shift and go to state 16
+    const                          shift and go to state 17
+    variant                        shift and go to state 18
+
+state 37
+
+    (11) init_lists -> LBRACE init_lists init_list . RBRACE
+
+    RBRACE          shift and go to state 45
+
+
+state 38
+
+    (12) init_lists -> LBRACE init_list RBRACE .
+
+    NEWLINE         reduce using rule 12 (init_lists -> LBRACE init_list RBRACE .)
+    LBRACE          reduce using rule 12 (init_lists -> LBRACE init_list RBRACE .)
+
+
+state 39
+
+    (10) varsize -> LSQBRACKET expression COMMA expression . RSQBRACKET
+    (24) math_expression -> expression . PLUS expression
+
+    RSQBRACKET      shift and go to state 46
+    PLUS            shift and go to state 29
+
+
+state 40
+
+    (24) math_expression -> expression PLUS expression .
+    (24) math_expression -> expression . PLUS expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+    RSQBRACKET      reduce using rule 24 (math_expression -> expression PLUS expression .)
+    COMMA           reduce using rule 24 (math_expression -> expression PLUS expression .)
+    SEMICOLON       reduce using rule 24 (math_expression -> expression PLUS expression .)
+    PLUS            shift and go to state 29
+
+  ! PLUS            [ reduce using rule 24 (math_expression -> expression PLUS expression .) ]
+
+
+state 41
+
+    (13) init_list -> LBRACE inits RBRACE .
+
+    RBRACE          reduce using rule 13 (init_list -> LBRACE inits RBRACE .)
+
+
+state 42
+
+    (15) inits -> inits init .
+
+    RBRACE          reduce using rule 15 (inits -> inits init .)
+    MINUS           reduce using rule 15 (inits -> inits init .)
+    TRUE            reduce using rule 15 (inits -> inits init .)
+    FALSE           reduce using rule 15 (inits -> inits init .)
+    DECIMAL         reduce using rule 15 (inits -> inits init .)
+    LETTERS         reduce using rule 15 (inits -> inits init .)
+    NAME            reduce using rule 15 (inits -> inits init .)
+
+
+state 43
+
+    (17) init -> expressions COMMA . expression SEMICOLON
+    (19) expressions -> expressions COMMA . expression
+    (21) expression -> . math_expression
+    (22) expression -> . const
+    (23) expression -> . variant
+    (24) math_expression -> . expression PLUS expression
+    (25) math_expression -> . MINUS expression
+    (26) const -> . TRUE
+    (27) const -> . FALSE
+    (28) const -> . DECIMAL
+    (29) const -> . LETTERS
+    (7) variant -> . NAME
+    (8) variant -> . NAME varsize
+
+    MINUS           shift and go to state 19
+    TRUE            shift and go to state 20
+    FALSE           shift and go to state 21
+    DECIMAL         shift and go to state 22
+    LETTERS         shift and go to state 23
+    NAME            shift and go to state 9
+
+    expression                     shift and go to state 47
+    math_expression                shift and go to state 16
+    const                          shift and go to state 17
+    variant                        shift and go to state 18
+
+state 44
+
+    (18) init -> expression SEMICOLON .
+
+    RBRACE          reduce using rule 18 (init -> expression SEMICOLON .)
+    MINUS           reduce using rule 18 (init -> expression SEMICOLON .)
+    TRUE            reduce using rule 18 (init -> expression SEMICOLON .)
+    FALSE           reduce using rule 18 (init -> expression SEMICOLON .)
+    DECIMAL         reduce using rule 18 (init -> expression SEMICOLON .)
+    LETTERS         reduce using rule 18 (init -> expression SEMICOLON .)
+    NAME            reduce using rule 18 (init -> expression SEMICOLON .)
+
+
+state 45
+
+    (11) init_lists -> LBRACE init_lists init_list RBRACE .
+
+    NEWLINE         reduce using rule 11 (init_lists -> LBRACE init_lists init_list RBRACE .)
+    LBRACE          reduce using rule 11 (init_lists -> LBRACE init_lists init_list RBRACE .)
+
+
+state 46
+
+    (10) varsize -> LSQBRACKET expression COMMA expression RSQBRACKET .
+
+    ASSIGNMENT      reduce using rule 10 (varsize -> LSQBRACKET expression COMMA expression RSQBRACKET .)
+    NEWLINE         reduce using rule 10 (varsize -> LSQBRACKET expression COMMA expression RSQBRACKET .)
+    RSQBRACKET      reduce using rule 10 (varsize -> LSQBRACKET expression COMMA expression RSQBRACKET .)
+    COMMA           reduce using rule 10 (varsize -> LSQBRACKET expression COMMA expression RSQBRACKET .)
+    PLUS            reduce using rule 10 (varsize -> LSQBRACKET expression COMMA expression RSQBRACKET .)
+    SEMICOLON       reduce using rule 10 (varsize -> LSQBRACKET expression COMMA expression RSQBRACKET .)
+
+
+state 47
+
+    (17) init -> expressions COMMA expression . SEMICOLON
+    (19) expressions -> expressions COMMA expression .
+    (24) math_expression -> expression . PLUS expression
+
+    SEMICOLON       shift and go to state 48
+    COMMA           reduce using rule 19 (expressions -> expressions COMMA expression .)
+    PLUS            shift and go to state 29
+
+
+state 48
+
+    (17) init -> expressions COMMA expression SEMICOLON .
+
+    RBRACE          reduce using rule 17 (init -> expressions COMMA expression SEMICOLON .)
+    MINUS           reduce using rule 17 (init -> expressions COMMA expression SEMICOLON .)
+    TRUE            reduce using rule 17 (init -> expressions COMMA expression SEMICOLON .)
+    FALSE           reduce using rule 17 (init -> expressions COMMA expression SEMICOLON .)
+    DECIMAL         reduce using rule 17 (init -> expressions COMMA expression SEMICOLON .)
+    LETTERS         reduce using rule 17 (init -> expressions COMMA expression SEMICOLON .)
+    NAME            reduce using rule 17 (init -> expressions COMMA expression SEMICOLON .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for PLUS in state 30 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 40 resolved as shift

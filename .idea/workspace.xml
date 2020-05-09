@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="522d7431-aa16-4c35-ba74-ea0ad5f2cb64" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/SyntaxTree/Tree.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SyntaxTree/__init__.py" afterDir="false" />
+    <list default="true" id="522d7431-aa16-4c35-ba74-ea0ad5f2cb64" name="Default Changelist" comment="Parser 0.1.1&#10;-Some rules added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lexer/lexer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lexer/lexer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Parser/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SyntaxTree/Tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/SyntaxTree/Tree.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +35,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.parser">
     <configuration name="lexer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Automata2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -57,8 +57,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="parser" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Automata2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Parser" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Parser/parser.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.parser" />
         <item itemvalue="Python.lexer" />
       </list>
     </recent_temporary>
@@ -95,7 +117,21 @@
       <option name="project" value="LOCAL" />
       <updated>1588439771961</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Syntax Tree 0.1">
+      <created>1588850680848</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1588850680848</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Parser 0.1.1&#10;-Some rules added">
+      <created>1588850748692</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1588850748692</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -114,41 +150,47 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Lexer 0.2&#10;-Whitespaces ignored" />
     <MESSAGE value="Lexer 0.3.1&#10;-Doublequote token deleted" />
-    <option name="LAST_COMMIT_MESSAGE" value="Lexer 0.3.1&#10;-Doublequote token deleted" />
+    <MESSAGE value="Syntax Tree 0.1" />
+    <MESSAGE value="Parser 0.1.1&#10;-Some rules added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parser 0.1.1&#10;-Some rules added" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="732" y="144" key="CommitChangelistDialog2" timestamp="1588850679979">
+    <state x="729" y="137" key="CommitChangelistDialog2" timestamp="1588863951590">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="732" y="144" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588850679979" />
-    <state width="1899" height="185" key="GridCell.Tab.0.bottom" timestamp="1588439783263">
+    <state x="729" y="137" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1588863951590" />
+    <state x="1220" y="278" key="FileChooserDialogImpl" timestamp="1588863189923">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="185" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588439783263" />
-    <state width="1899" height="185" key="GridCell.Tab.0.center" timestamp="1588439783263">
+    <state x="1220" y="278" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588863189923" />
+    <state width="936" height="222" key="GridCell.Tab.0.bottom" timestamp="1589030847561">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="185" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588439783263" />
-    <state width="1899" height="185" key="GridCell.Tab.0.left" timestamp="1588439783263">
+    <state width="936" height="222" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589030847561" />
+    <state width="936" height="222" key="GridCell.Tab.0.center" timestamp="1589030847561">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="185" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588439783263" />
-    <state width="1899" height="185" key="GridCell.Tab.0.right" timestamp="1588439783263">
+    <state width="936" height="222" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589030847561" />
+    <state width="936" height="222" key="GridCell.Tab.0.left" timestamp="1589030847561">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="185" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588439783263" />
+    <state width="936" height="222" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589030847561" />
+    <state width="936" height="222" key="GridCell.Tab.0.right" timestamp="1589030847561">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="936" height="222" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589030847561" />
     <state x="461" y="162" key="SettingsEditor" timestamp="1587971099414">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="162" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1587971099414" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1588850684200">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1588850750210">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1588850684200" />
-    <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1588848310635">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1588850750210" />
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1589028006983">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588848310635" />
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589028006983" />
     <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1588356760717">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

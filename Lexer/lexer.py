@@ -97,31 +97,31 @@ class Lexer:
         return self.lexer.token()
 
 
-data = '''FUNC function
-VARIANT a = {{12, "   ", TRUE;}}
-VARIANT b
-VARIANT c
-IFNHIGH PARAM, 1
-RETURN 1
-ENDIF
-a = PARAM
-b = CALL factorial PARAM + -1
-c = b
-WHILE a + -1
-c = c + b
-a = a + -1
-ENDW
-RETURN c
-ENDFUNC
-
-VARIANT a
-a = CALL factorial 6
-'''
-lexer = Lexer()
-lexer.input(data)
-while True:
-    token = lexer.token()
-    if token is None:
-        break
-    else:
-        print(token)
+# data = '''FUNC function
+# VARIANT a = {{12, "zhma", TRUE;}}
+# VARIANT b
+# VARIANT c
+# IFNHIGH PARAM, 1
+# RETURN 1
+# ENDIF
+# a = PARAM
+# b = CALL factorial PARAM + -1
+# c = b
+# WHILE a + -1
+# c = c + b
+# a = a + -1
+# ENDW
+# RETURN c
+# ENDFUNC
+#
+# VARIANT a [2, 1]
+# a = CALL factorial 6
+# '''
+# lexer = Lexer()
+# lexer.input(data)
+# while True:
+#     token = lexer.token()
+#     if token is None:
+#         break
+#     else:
+#         print(token)

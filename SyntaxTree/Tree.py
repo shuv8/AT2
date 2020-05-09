@@ -7,7 +7,7 @@ class TreeNode:
         self.lexpos = lexpos
 
     def __repr__(self):
-        return f'''{self.type}{self.value}{self.lineno}:{self.lexpos}'''
+        return f'''{self.type} {self.value} {self.lineno}:{self.lexpos}'''
 
     def print(self, level = 0):
         if self is None:
