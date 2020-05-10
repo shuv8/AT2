@@ -71,7 +71,7 @@ class Lexer:
         return t
 
     def t_LETTERS(self, t):
-        r'\"[^\"]*\"'
+        r'\"[^\"\n]*\"'
         t.type = reserved.get(t.value, 'LETTERS')
         t.value = str(t.value).strip('\"')
         return t
@@ -116,6 +116,8 @@ class Lexer:
 #
 # VARIANT a [2, 1]
 # a = CALL factorial 6
+# '''
+# data = '''0abc caaca
 # '''
 # lexer = Lexer()
 # lexer.input(data)
