@@ -31,21 +31,27 @@ class Parser(object):
         """statements : statements statement
                         | statement"""
         if len(p) == 2:
-            p[0] = p[1]
+            p[0] = TreeNode('statement', children=p[1])
         else:
-            p[0] = TreeNode('statements', children=[p[1], p[2]])
+            p[0] = TreeNode('statements', children=[p[1], TreeNode('statement', children=p[2])])
 
     def p_statement(self, p):
-        """statement : declaration NEWLINE
-                        | assignment NEWLINE"""
-                        # | convert NEWLINE
-                        # | while NEWLINE
-                        # | until NEWLINE
-                        # | if NEWLINE
-                        # | command NEWLINE
+        """statement : empty NEWLINE
+                        | declaration NEWLINE
+                        | assignment NEWLINE
+                        | convert NEWLINE
+                        | while NEWLINE
+                        | until NEWLINE
+                        | if NEWLINE
+                        | statement_error NEWLINE"""
                         # | function NEWLINE
-                        # | function_call NEWLINE"""
+                        # | function_call NEWLINE
+                        # | command NEWLINE"""
         p[0] = p[1]
+
+    def p_empty(self, p):
+        """empty : """
+        pass
 
     def p_declaration(self, p):
         """declaration : VARIANT variant
@@ -54,6 +60,17 @@ class Parser(object):
             p[0] = TreeNode('declaration', value='VARIANT', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
         else:
             p[0] = TreeNode('declaration', value='VARIANT', children=[TreeNode('init', value=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1)), p[4], TreeNode('init_end')], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+    def p_decl_error(self, p):
+        """declaration : VARIANT error
+                        | VARIANT variant ASSIGNMENT error
+                        | declaration error"""
+        if len(p) == 3:
+            p[0] = TreeNode('error', value='Declaration error', lineno=p.lineno(2), lexpos=p.lexpos(2))
+            sys.stderr.write(f'==> Error in variant declaration\n')
+        else:
+            p[0] = TreeNode('error', value='Initialization error', lineno=p.lineno(2), lexpos=p.lexpos(2))
+            sys.stderr.write(f'==> Error in variant initialization\n')
 
     def p_variant(self, p):
         """variant : NAME
@@ -70,6 +87,16 @@ class Parser(object):
             p[0] = TreeNode('varsize', children=p[2], lineno=p.lineno(2), lexpos=p.lexpos(2))
         else:
             p[0] = TreeNode('varsize', children=[p[2], p[4]], lineno=p.lineno(2), lexpos=p.lexpos(2))
+
+    def p_varsize_error(self, p):
+        """varsize : LSQBRACKET error RSQBRACKET
+                    | LSQBRACKET error COMMA decimal_expression RSQBRACKET
+                    | LSQBRACKET decimal_expression COMMA error RSQBRACKET
+                    | LSQBRACKET error COMMA error RSQBRACKET
+                    | varsize error"""
+        p[0] = TreeNode('error', value='Variant size/index error', lineno=p.lineno(1), lexpos=p.lexpos(1))
+        sys.stderr.write(f'==> Error in variant size/index!\n')
+
 
     def p_initialization(self, p):
         """initialization : LBRACE init_lists RBRACE"""
@@ -100,20 +127,25 @@ class Parser(object):
             p[0] = TreeNode('inits', children=[p[1], p[2]])
 
     def p_init(self, p):
-        """init : expressions COMMA expression SEMICOLON
-                    | expression SEMICOLON"""
+        """init : const_expressions COMMA const_expression SEMICOLON
+                    | const_expression SEMICOLON"""
         if len(p) == 3:
             p[0] = TreeNode('expression', children=[p[1]])
         else:
             p[0] = TreeNode('expressions', children=[p[1], p[3]])
 
-    def p_expressions(self, p):
-        """expressions : expressions COMMA expression
-                        | expression"""
+    def p_const_expressions(self, p):
+        """const_expressions : const_expressions COMMA const_expression
+                        | const_expression"""
         if len(p) == 2:
             p[0] = p[1]
         else:
-            p[0] = TreeNode('expressions', children=[p[1], p[3]])
+            p[0] = TreeNode('const_expressions', children=[p[1], p[3]])
+
+    def p_const_expression(self, p):
+        """const_expression : const_math_expression
+                        | const"""
+        p[0] = TreeNode('const_expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_expression(self, p):
         """expression : math_expression
@@ -127,9 +159,23 @@ class Parser(object):
                                 | variant"""
         p[0] = TreeNode('decimal_expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
+    def p_bool_expression(self, p):
+        """bool_expression : bool_math_expression
+                            | bool_const
+                            | variant"""
+        p[0] = TreeNode('bool_expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
     def p_math_expression(self, p):
         """math_expression : expression PLUS expression
                             | MINUS expression"""
+        if len(p) == 3:
+            p[0] = TreeNode('unar_op', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        else:
+            p[0] = TreeNode('bin_op', value=p[2], children=[p[1], p[3]], lineno=p.lineno(2), lexpos=p.lexpos(2))
+
+    def p_const_math_expression(self, p):
+        """const_math_expression : const_expression PLUS const_expression
+                            | MINUS const_expression"""
         if len(p) == 3:
             p[0] = TreeNode('unar_op', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
         else:
@@ -141,7 +187,14 @@ class Parser(object):
         if len(p) == 3:
             p[0] = TreeNode('unar_op', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
         else:
-            print(p[2])
+            p[0] = TreeNode('bin_op', value=p[2], children=[p[1], p[3]], lineno=p.lineno(2), lexpos=p.lexpos(2))
+
+    def p_bool_math_expression(self, p):
+        """bool_math_expression : bool_expression PLUS bool_expression
+                                | MINUS bool_expression"""
+        if len(p) == 3:
+            p[0] = TreeNode('unar_op', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        else:
             p[0] = TreeNode('bin_op', value=p[2], children=[p[1], p[3]], lineno=p.lineno(2), lexpos=p.lexpos(2))
 
     def p_const(self, p):
@@ -155,30 +208,87 @@ class Parser(object):
         """decimal_const : DECIMAL"""
         p[0] = TreeNode('decimal_const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
+    def p_bool_const(self, p):
+        """bool_const : TRUE
+                        | FALSE"""
+        p[0] = TreeNode('bool_const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
     def p_assignment(self, p):
         """assignment : variant ASSIGNMENT expression"""
         p[0] = TreeNode('assignment', value=p[1], children=p[3], lineno=p.lineno(2), lexpos=p.lexpos(2))
 
-    # def p_convert(self, p):
-    #     """convert : """
+    def p_assignment_error(self, p):
+        """assignment : variant ASSIGNMENT error"""
+        p[0] = TreeNode('error', value='Assignment error', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        sys.stderr.write(f'==> Assignment error!\n')
 
+    def p_convert(self, p):
+        """convert : CONVERT type TO type variant"""
+        p[0] = TreeNode('convert', value=[p[2], p[4]], children=p[5], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
+    def p_convert_error(self, p):
+        """convert : CONVERT type TO type error
+                    | CONVERT type TO error
+                    | CONVERT type error
+                    | CONVERT error
+                    | convert error"""
+        p[0] = TreeNode('error', value='Convertation error', lineno=p.lineno(1), lexpos=p.lexpos(1))
+        sys.stderr.write(f'==> Error in convertation!\n')
 
+    def p_type(self, p):
+        """type : BOOL
+                | DIGIT
+                | STRING"""
+        p[0] = p[1]
 
+    def p_while(self, p):
+        """while : WHILE bool_expression NEWLINE statements ENDW"""
+        p[0] = TreeNode('while', children={'condition': p[2], 'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
 
+    def p_until(self, p):
+        """until : UNTIL bool_expression NEWLINE statements ENDU"""
+        p[0] = TreeNode('until', children={'condition': p[2], 'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
 
-data = '''VARIANT b [12 + -123]
-a = 1234
-a = "odin" + "dva"
+    def p_if(self, p):
+        """if : IFLESS decimal_expression COMMA decimal_expression NEWLINE statements ENDIF
+              | IFNLESS decimal_expression COMMA decimal_expression NEWLINE statements ENDIF
+              | IFZERO decimal_expression NEWLINE statements ENDIF
+              | IFNZERO decimal_expression NEWLINE statements ENDIF
+              | IFHIGH decimal_expression COMMA decimal_expression NEWLINE statements ENDIF
+              | IFNHIGH decimal_expression COMMA decimal_expression NEWLINE statements ENDIF"""
+        if len(p) == 6:
+            p[0] = TreeNode('if', children={'condition': TreeNode('condition', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1)),
+                                        'conditional_expressions': TreeNode('conditional_expressions', children=p[2], lineno=p.lineno(2), lexpos=p.lexpos(2)),
+                                            'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+        else:
+            p[0] = TreeNode('if', children={'condition': TreeNode('condition', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1)),
+                                    'conditional_expressions': TreeNode('conditional_expressions', children=[p[2], p[4]], lineno=p.lineno(2), lexpos=p.lexpos(2)),
+                                            'body': p[6]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+    def p_statement_error(self, p):
+        """statement_error : error
+                            | statement_error error"""
+        p[0] = TreeNode('error', value='Very plohaya error', lineno=p.lineno(1), lexpos=p.lexpos(1))
+        sys.stderr.write(f'==> Error in a whole line!\n')
+
+    def p_error(self, p):
+        try:
+            sys.stderr.write(f'Error at {p.lineno} line\n')
+        except:
+            sys.stderr.write(f'Error\n')
+        self.ok = False
+
+data = '''a = a + b
+asdadadadadadaxczczc
 '''
-lexer = Lexer()
-lexer.input(data)
-while True:
-    token = lexer.token()
-    if token is None:
-        break
-    else:
-        print(token)
+# lexer = Lexer()
+# lexer.input(data)
+# while True:
+#     token = lexer.token()
+#     if token is None:
+#         break
+#     else:
+#         print(token)
 
 parser = Parser()
 tree = parser.parse(data)
