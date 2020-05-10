@@ -71,7 +71,7 @@ class Lexer:
         return t
 
     def t_LETTERS(self, t):
-        r'\".*\"'
+        r'\"[^\"]*\"'
         t.type = reserved.get(t.value, 'LETTERS')
         t.value = str(t.value).strip('\"')
         return t
@@ -98,7 +98,7 @@ class Lexer:
 
 
 # data = '''FUNC function
-# VARIANT a = {{12, "zhma", TRUE;}}
+# VARIANT a = {{12, "zhma", "lol", TRUE;}}
 # VARIANT b
 # VARIANT c
 # IFNHIGH PARAM, 1
