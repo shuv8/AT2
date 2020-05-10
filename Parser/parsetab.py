@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ASSIGNMENT BOOL CALL COMMA COMMAND CONVERT DECIMAL DIGIT DIGITIZE ENDFUNC ENDIF ENDU ENDW FALSE FUNC IFHIGH IFLESS IFNHIGH IFNLESS IFNZERO IFZERO LBRACE LETTERS LSQBRACKET MINUS NAME NEWLINE PARAM PLUS RBRACE RETURN RSQBRACKET SEMICOLON STRING TO TRUE UNTIL VARIANT WHILEprogram : statementsstatements : statements statement\n                        | statementstatement : declaration NEWLINEdeclaration : VARIANT variant\n                        | VARIANT variant ASSIGNMENT init_listsvariant : NAME\n                    | NAME varsizevarsize : LSQBRACKET expression RSQBRACKET\n                    | LSQBRACKET expression COMMA expression RSQBRACKETinit_lists : LBRACE init_lists init_list RBRACE\n                        | LBRACE init_list RBRACEinit_list : LBRACE inits RBRACE\n                        | LBRACE RBRACEinits : inits init\n                    | initinit : expressions COMMA expression SEMICOLON\n                    | expression SEMICOLONexpressions : expressions COMMA expression\n                        | expressionexpression : math_expression\n                        | const\n                        | variantmath_expression : expression PLUS expression\n                            | MINUS expressionconst : TRUE\n                | FALSE\n                | DECIMAL\n                | LETTERS'
+_lr_signature = 'ASSIGNMENT BOOL CALL COMMA COMMAND CONVERT DECIMAL DIGIT DIGITIZE ENDFUNC ENDIF ENDU ENDW FALSE FUNC IFHIGH IFLESS IFNHIGH IFNLESS IFNZERO IFZERO LBRACE LETTERS LSQBRACKET MINUS NAME NEWLINE PARAM PLUS RBRACE RETURN RSQBRACKET SEMICOLON STRING TO TRUE UNTIL VARIANT WHILEprogram : statementsstatements : statements statement\n                        | statementstatement : declaration NEWLINE\n                        | assignment NEWLINE\n                        | convert NEWLINEdeclaration : VARIANT variant\n                        | VARIANT variant ASSIGNMENT initializationvariant : NAME\n                    | NAME varsizevarsize : LSQBRACKET decimal_expression RSQBRACKET\n                    | LSQBRACKET decimal_expression COMMA decimal_expression RSQBRACKETinitialization : LBRACE init_lists RBRACEinit_lists : init_lists init_list\n                        | init_listinit_list : LBRACE inits RBRACE\n                        | LBRACE RBRACEinits : inits init\n                    | initinit : expressions COMMA expression SEMICOLON\n                    | expression SEMICOLONexpressions : expressions COMMA expression\n                        | expressionexpression : math_expression\n                        | const\n                        | variantdecimal_expression : dec_math_expression\n                                | decimal_const\n                                | variantmath_expression : expression PLUS expression\n                            | MINUS expressiondec_math_expression : decimal_expression PLUS decimal_expression\n                                | MINUS decimal_expressionconst : TRUE\n                | FALSE\n                | DECIMAL\n                | LETTERSdecimal_const : DECIMALassignment : variant ASSIGNMENT expressionconvert : '
     
-_lr_action_items = {'VARIANT':([0,2,3,6,7,],[5,5,-3,-2,-4,]),'$end':([1,2,3,6,7,],[0,-1,-3,-2,-4,]),'NEWLINE':([4,8,9,11,13,27,38,45,46,],[7,-5,-7,-8,-6,-9,-12,-11,-10,]),'NAME':([5,12,19,24,28,29,32,33,36,42,43,44,48,],[9,9,9,9,9,9,9,-16,9,-15,9,-18,-17,]),'ASSIGNMENT':([8,9,11,27,46,],[10,-7,-8,-9,-10,]),'RSQBRACKET':([9,11,15,16,17,18,20,21,22,23,27,30,39,40,46,],[-7,-8,27,-21,-22,-23,-26,-27,-28,-29,-9,-25,46,-24,-10,]),'COMMA':([9,11,15,16,17,18,20,21,22,23,27,30,34,35,40,46,47,],[-7,-8,28,-21,-22,-23,-26,-27,-28,-29,-9,-25,43,-20,-24,-10,-19,]),'PLUS':([9,11,15,16,17,18,20,21,22,23,27,30,35,39,40,46,47,],[-7,-8,29,-21,-22,-23,-26,-27,-28,-29,-9,29,29,29,29,-10,29,]),'SEMICOLON':([9,11,16,17,18,20,21,22,23,27,30,35,40,46,47,],[-7,-8,-21,-22,-23,-26,-27,-28,-29,-9,-25,44,-24,-10,48,]),'LSQBRACKET':([9,],[12,]),'LBRACE':([10,14,24,25,38,45,],[14,24,24,36,-12,-11,]),'MINUS':([12,19,24,28,29,32,33,36,42,43,44,48,],[19,19,19,19,19,19,-16,19,-15,19,-18,-17,]),'TRUE':([12,19,24,28,29,32,33,36,42,43,44,48,],[20,20,20,20,20,20,-16,20,-15,20,-18,-17,]),'FALSE':([12,19,24,28,29,32,33,36,42,43,44,48,],[21,21,21,21,21,21,-16,21,-15,21,-18,-17,]),'DECIMAL':([12,19,24,28,29,32,33,36,42,43,44,48,],[22,22,22,22,22,22,-16,22,-15,22,-18,-17,]),'LETTERS':([12,19,24,28,29,32,33,36,42,43,44,48,],[23,23,23,23,23,23,-16,23,-15,23,-18,-17,]),'RBRACE':([24,26,31,32,33,36,37,41,42,44,48,],[31,38,-14,41,-16,31,45,-13,-15,-18,-17,]),}
+_lr_action_items = {'VARIANT':([0,2,3,10,11,12,13,],[7,7,-3,-2,-4,-5,-6,]),'NEWLINE':([0,2,3,4,5,6,9,10,11,12,13,14,16,19,20,21,22,24,25,26,27,34,37,38,45,53,55,],[-40,-40,-3,11,12,13,-9,-2,-4,-5,-6,-7,-10,-26,-39,-24,-25,-34,-35,-36,-37,-8,-31,-11,-30,-13,-12,]),'NAME':([0,2,3,7,10,11,12,13,15,17,23,32,36,39,40,42,48,50,57,58,59,61,],[9,9,-3,9,-2,-4,-5,-6,9,9,9,9,9,9,9,9,9,-19,-18,9,-21,-20,]),'$end':([1,2,3,10,11,12,13,],[0,-1,-3,-2,-4,-5,-6,]),'ASSIGNMENT':([8,9,14,16,38,55,],[15,-9,18,-10,-11,-12,]),'PLUS':([9,16,19,20,21,22,24,25,26,27,28,29,30,31,33,37,38,41,45,46,47,52,55,60,],[-9,-10,-26,36,-24,-25,-34,-35,-36,-37,40,-27,-28,-29,-38,36,-11,40,36,40,40,36,-12,36,]),'RSQBRACKET':([9,16,28,29,30,31,33,38,41,46,47,55,],[-9,-10,38,-27,-28,-29,-38,-11,-33,55,-32,-12,]),'COMMA':([9,16,19,21,22,24,25,26,27,28,29,30,31,33,37,38,41,45,47,51,52,55,60,],[-9,-10,-26,-24,-25,-34,-35,-36,-37,39,-27,-28,-29,-38,-31,-11,-33,-30,-32,58,-23,-12,-22,]),'SEMICOLON':([9,16,19,21,22,24,25,26,27,37,38,45,52,55,60,],[-9,-10,-26,-24,-25,-34,-35,-36,-37,-31,-11,-30,59,-12,61,]),'LSQBRACKET':([9,],[17,]),'MINUS':([15,17,23,32,36,39,40,42,48,50,57,58,59,61,],[23,32,23,32,23,32,32,23,23,-19,-18,23,-21,-20,]),'TRUE':([15,23,36,42,48,50,57,58,59,61,],[24,24,24,24,24,-19,-18,24,-21,-20,]),'FALSE':([15,23,36,42,48,50,57,58,59,61,],[25,25,25,25,25,-19,-18,25,-21,-20,]),'DECIMAL':([15,17,23,32,36,39,40,42,48,50,57,58,59,61,],[26,33,26,33,26,33,33,26,26,-19,-18,26,-21,-20,]),'LETTERS':([15,23,36,42,48,50,57,58,59,61,],[27,27,27,27,27,-19,-18,27,-21,-20,]),'LBRACE':([18,35,43,44,49,54,56,],[35,42,42,-15,-17,-14,-16,]),'RBRACE':([42,43,44,48,49,50,54,56,57,59,61,],[49,53,-15,56,-17,-19,-14,-16,-18,-21,-20,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'statements':([0,],[2,]),'statement':([0,2,],[3,6,]),'declaration':([0,2,],[4,4,]),'variant':([5,12,19,24,28,29,32,36,43,],[8,18,18,18,18,18,18,18,18,]),'varsize':([9,],[11,]),'init_lists':([10,14,24,],[13,25,25,]),'expression':([12,19,24,28,29,32,36,43,],[15,30,35,39,40,35,35,47,]),'math_expression':([12,19,24,28,29,32,36,43,],[16,16,16,16,16,16,16,16,]),'const':([12,19,24,28,29,32,36,43,],[17,17,17,17,17,17,17,17,]),'init_list':([14,24,25,],[26,26,37,]),'inits':([24,36,],[32,32,]),'init':([24,32,36,],[33,42,33,]),'expressions':([24,32,36,],[34,34,34,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statements':([0,],[2,]),'statement':([0,2,],[3,10,]),'declaration':([0,2,],[4,4,]),'assignment':([0,2,],[5,5,]),'convert':([0,2,],[6,6,]),'variant':([0,2,7,15,17,23,32,36,39,40,42,48,58,],[8,8,14,19,31,19,31,19,31,31,19,19,19,]),'varsize':([9,],[16,]),'expression':([15,23,36,42,48,58,],[20,37,45,52,52,60,]),'math_expression':([15,23,36,42,48,58,],[21,21,21,21,21,21,]),'const':([15,23,36,42,48,58,],[22,22,22,22,22,22,]),'decimal_expression':([17,32,39,40,],[28,41,46,47,]),'dec_math_expression':([17,32,39,40,],[29,29,29,29,]),'decimal_const':([17,32,39,40,],[30,30,30,30,]),'initialization':([18,],[34,]),'init_lists':([35,],[43,]),'init_list':([35,43,],[44,54,]),'inits':([42,],[48,]),'init':([42,48,],[50,57,]),'expressions':([42,48,],[51,51,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -31,29 +31,40 @@ _lr_productions = [
   ('statements -> statements statement','statements',2,'p_statements','parser.py',31),
   ('statements -> statement','statements',1,'p_statements','parser.py',32),
   ('statement -> declaration NEWLINE','statement',2,'p_statement','parser.py',39),
+  ('statement -> assignment NEWLINE','statement',2,'p_statement','parser.py',40),
+  ('statement -> convert NEWLINE','statement',2,'p_statement','parser.py',41),
   ('declaration -> VARIANT variant','declaration',2,'p_declaration','parser.py',51),
-  ('declaration -> VARIANT variant ASSIGNMENT init_lists','declaration',4,'p_declaration','parser.py',52),
+  ('declaration -> VARIANT variant ASSIGNMENT initialization','declaration',4,'p_declaration','parser.py',52),
   ('variant -> NAME','variant',1,'p_variant','parser.py',59),
   ('variant -> NAME varsize','variant',2,'p_variant','parser.py',60),
-  ('varsize -> LSQBRACKET expression RSQBRACKET','varsize',3,'p_varsize','parser.py',67),
-  ('varsize -> LSQBRACKET expression COMMA expression RSQBRACKET','varsize',5,'p_varsize','parser.py',68),
-  ('init_lists -> LBRACE init_lists init_list RBRACE','init_lists',4,'p_init_lists','parser.py',75),
-  ('init_lists -> LBRACE init_list RBRACE','init_lists',3,'p_init_lists','parser.py',76),
-  ('init_list -> LBRACE inits RBRACE','init_list',3,'p_init_list','parser.py',83),
-  ('init_list -> LBRACE RBRACE','init_list',2,'p_init_list','parser.py',84),
-  ('inits -> inits init','inits',2,'p_inits','parser.py',91),
-  ('inits -> init','inits',1,'p_inits','parser.py',92),
-  ('init -> expressions COMMA expression SEMICOLON','init',4,'p_init','parser.py',99),
-  ('init -> expression SEMICOLON','init',2,'p_init','parser.py',100),
-  ('expressions -> expressions COMMA expression','expressions',3,'p_expressions','parser.py',107),
-  ('expressions -> expression','expressions',1,'p_expressions','parser.py',108),
-  ('expression -> math_expression','expression',1,'p_expression','parser.py',115),
-  ('expression -> const','expression',1,'p_expression','parser.py',116),
-  ('expression -> variant','expression',1,'p_expression','parser.py',117),
-  ('math_expression -> expression PLUS expression','math_expression',3,'p_math_expression','parser.py',121),
-  ('math_expression -> MINUS expression','math_expression',2,'p_math_expression','parser.py',122),
-  ('const -> TRUE','const',1,'p_const','parser.py',129),
-  ('const -> FALSE','const',1,'p_const','parser.py',130),
-  ('const -> DECIMAL','const',1,'p_const','parser.py',131),
-  ('const -> LETTERS','const',1,'p_const','parser.py',132),
+  ('varsize -> LSQBRACKET decimal_expression RSQBRACKET','varsize',3,'p_varsize','parser.py',67),
+  ('varsize -> LSQBRACKET decimal_expression COMMA decimal_expression RSQBRACKET','varsize',5,'p_varsize','parser.py',68),
+  ('initialization -> LBRACE init_lists RBRACE','initialization',3,'p_initialization','parser.py',75),
+  ('init_lists -> init_lists init_list','init_lists',2,'p_init_lists','parser.py',79),
+  ('init_lists -> init_list','init_lists',1,'p_init_lists','parser.py',80),
+  ('init_list -> LBRACE inits RBRACE','init_list',3,'p_init_list','parser.py',87),
+  ('init_list -> LBRACE RBRACE','init_list',2,'p_init_list','parser.py',88),
+  ('inits -> inits init','inits',2,'p_inits','parser.py',95),
+  ('inits -> init','inits',1,'p_inits','parser.py',96),
+  ('init -> expressions COMMA expression SEMICOLON','init',4,'p_init','parser.py',103),
+  ('init -> expression SEMICOLON','init',2,'p_init','parser.py',104),
+  ('expressions -> expressions COMMA expression','expressions',3,'p_expressions','parser.py',111),
+  ('expressions -> expression','expressions',1,'p_expressions','parser.py',112),
+  ('expression -> math_expression','expression',1,'p_expression','parser.py',119),
+  ('expression -> const','expression',1,'p_expression','parser.py',120),
+  ('expression -> variant','expression',1,'p_expression','parser.py',121),
+  ('decimal_expression -> dec_math_expression','decimal_expression',1,'p_decimal_expression','parser.py',125),
+  ('decimal_expression -> decimal_const','decimal_expression',1,'p_decimal_expression','parser.py',126),
+  ('decimal_expression -> variant','decimal_expression',1,'p_decimal_expression','parser.py',127),
+  ('math_expression -> expression PLUS expression','math_expression',3,'p_math_expression','parser.py',131),
+  ('math_expression -> MINUS expression','math_expression',2,'p_math_expression','parser.py',132),
+  ('dec_math_expression -> decimal_expression PLUS decimal_expression','dec_math_expression',3,'p_dec_math_expression','parser.py',139),
+  ('dec_math_expression -> MINUS decimal_expression','dec_math_expression',2,'p_dec_math_expression','parser.py',140),
+  ('const -> TRUE','const',1,'p_const','parser.py',148),
+  ('const -> FALSE','const',1,'p_const','parser.py',149),
+  ('const -> DECIMAL','const',1,'p_const','parser.py',150),
+  ('const -> LETTERS','const',1,'p_const','parser.py',151),
+  ('decimal_const -> DECIMAL','decimal_const',1,'p_decimal_const','parser.py',155),
+  ('assignment -> variant ASSIGNMENT expression','assignment',3,'p_assignment','parser.py',159),
+  ('convert -> <empty>','convert',0,'p_convert','parser.py',163),
 ]

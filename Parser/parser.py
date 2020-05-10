@@ -31,13 +31,13 @@ class Parser(object):
         """statements : statements statement
                         | statement"""
         if len(p) == 2:
-            p[0] = TreeNode('statement', children=[p[1]])
+            p[0] = p[1]
         else:
             p[0] = TreeNode('statements', children=[p[1], p[2]])
 
     def p_statement(self, p):
-        """statement : declaration NEWLINE"""
-                        # | assignment NEWLINE
+        """statement : declaration NEWLINE
+                        | assignment NEWLINE"""
                         # | convert NEWLINE
                         # | while NEWLINE
                         # | until NEWLINE
@@ -49,7 +49,7 @@ class Parser(object):
 
     def p_declaration(self, p):
         """declaration : VARIANT variant
-                        | VARIANT variant ASSIGNMENT init_lists"""
+                        | VARIANT variant ASSIGNMENT initialization"""
         if len(p) == 3:
             p[0] = TreeNode('declaration', value='VARIANT', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
         else:
@@ -64,20 +64,24 @@ class Parser(object):
             p[0] = TreeNode('variant', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_varsize(self, p):
-        """varsize : LSQBRACKET expression RSQBRACKET
-                    | LSQBRACKET expression COMMA expression RSQBRACKET"""
+        """varsize : LSQBRACKET decimal_expression RSQBRACKET
+                    | LSQBRACKET decimal_expression COMMA decimal_expression RSQBRACKET"""
         if len(p) == 4:
-            p[0] = TreeNode('varsize', value=p[2], lineno=p.lineno(2), lexpos=p.lexpos(2))
+            p[0] = TreeNode('varsize', children=p[2], lineno=p.lineno(2), lexpos=p.lexpos(2))
         else:
-            p[0] = TreeNode('varsize', value=[p[2], p[4]], lineno=p.lineno(2), lexpos=p.lexpos(2))
+            p[0] = TreeNode('varsize', children=[p[2], p[4]], lineno=p.lineno(2), lexpos=p.lexpos(2))
+
+    def p_initialization(self, p):
+        """initialization : LBRACE init_lists RBRACE"""
+        p[0] = p[2]
 
     def p_init_lists(self, p):
-        """init_lists : LBRACE init_lists init_list RBRACE
-                        | LBRACE init_list RBRACE"""
-        if len(p) == 4:
-            p[0] = p[2]
+        """init_lists : init_lists init_list
+                        | init_list"""
+        if len(p) == 2:
+            p[0] = p[1]
         else:
-            p[0] = TreeNode('init_lists', children=[p[2], p[3]])
+            p[0] = TreeNode('init_lists', children=[p[1], p[2]])
 
     def p_init_list(self, p):
         """init_list : LBRACE inits RBRACE
@@ -117,12 +121,27 @@ class Parser(object):
                         | variant"""
         p[0] = TreeNode('expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
+    def p_decimal_expression(self, p):
+        """decimal_expression : dec_math_expression
+                                | decimal_const
+                                | variant"""
+        p[0] = TreeNode('decimal_expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
     def p_math_expression(self, p):
         """math_expression : expression PLUS expression
                             | MINUS expression"""
         if len(p) == 3:
             p[0] = TreeNode('unar_op', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
         else:
+            p[0] = TreeNode('bin_op', value=p[2], children=[p[1], p[3]], lineno=p.lineno(2), lexpos=p.lexpos(2))
+
+    def p_dec_math_expression(self, p):
+        """dec_math_expression : decimal_expression PLUS decimal_expression
+                                | MINUS decimal_expression"""
+        if len(p) == 3:
+            p[0] = TreeNode('unar_op', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        else:
+            print(p[2])
             p[0] = TreeNode('bin_op', value=p[2], children=[p[1], p[3]], lineno=p.lineno(2), lexpos=p.lexpos(2))
 
     def p_const(self, p):
@@ -132,15 +151,25 @@ class Parser(object):
                 | LETTERS"""
         p[0] = TreeNode('const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
+    def p_decimal_const(self, p):
+        """decimal_const : DECIMAL"""
+        p[0] = TreeNode('decimal_const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+    def p_assignment(self, p):
+        """assignment : variant ASSIGNMENT expression"""
+        p[0] = TreeNode('assignment', value=p[1], children=p[3], lineno=p.lineno(2), lexpos=p.lexpos(2))
+
+    # def p_convert(self, p):
+    #     """convert : """
 
 
 
 
 
 
-
-data = '''VARIANT a = {{12, TRUE; "lol";}{"GRAA";}}
-VARIANT bcde [12, 123]
+data = '''VARIANT b [12 + -123]
+a = 1234
+a = "odin" + "dva"
 '''
 lexer = Lexer()
 lexer.input(data)
