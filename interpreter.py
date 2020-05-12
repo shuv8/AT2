@@ -4,6 +4,9 @@ from Parser.parser import Parser
 from SyntaxTree.Tree import TreeNode
 from Errors.errors import Error_Handler
 from Errors.errors import InterpreterConvertationError
+from Errors.errors import InterpreterParametrError
+from Errors.errors import InterpreterRedeclarationError
+from Errors.errors import InterpreterIndexError
 
 
 class Variant:
@@ -89,6 +92,7 @@ class Interpreter:
         self.symbol_table = [dict()]
         self.tree = None
         self.functions = None
+        self.scope = 0
         self.error = Error_Handler()
         self.error_types = {'UnexpectedError': 0,
                             'RedeclarationError': 1,
@@ -99,7 +103,7 @@ class Interpreter:
     def interpreter(self, program=None):
         self.program = program
         self.symbol_table = [dict()]
-        self.tree, self.functions, _ok = self.parser.parse(self.program)
+        self.tree, _ok, self.functions = self.parser.parse(self.program)
         if _ok:
             self.interpreter_tree(self.tree)
             self.interpreter_node(self.tree)
@@ -118,15 +122,75 @@ class Interpreter:
         if node.type == 'error':
             self.error.call
         # program
-        if node.type == 'program':
+        elif node.type == 'program':
             self.interpreter_node(node.children)
         # program -> statements
         elif node.type == 'statements':
             for child in node.children:
                 self.interpreter_node(child)
+        elif node.type == 'statement':
+            self.interpreter_node(node.children)
+        elif node.type == 'declaration':
+            declaration_child = node.children
+            if isinstance(declaration_child, list):
+                pass
+            else:
+                try:
+                    self.declare_variant(declaration_child)
+                except InterpreterRedeclarationError:
+                    self.error.call(self.error_types['RedeclarationError'], node)
+                except InterpreterIndexError:
+                    self.error.call(self.error_types['IndexError'], node)
+        elif node.type == 'expression':
+            return self.interpreter_node(node.children)
+        elif node.type == 'const_expression':
+            return self.interpreter_node(node.children)
+        elif node.type == 'decimal_expression':
+            return self.interpreter_node(node.children)
+        elif node.type == 'bool_expression':
+            return self.interpreter_node(node.children)
+        elif node.type == 'string_expression':
+            return self.interpreter_node(node.children)
+        elif node.type == 'assignment':
+            var_name = node.value.value
+            index = 0
+            if var_name not in self.symbol_table[self.scope].keys():
+                self.error.call(self.error_types['UndeclaredError'], node)
+            else:
+                pass
 
 
 
-# a = TypeConverter()
-# res = a.convert('abcRUEabc', 'bool')
-# print(res)
+    def declare_variant(self, variant, init=None):
+        if variant.children is not None:
+            size = variant.children.children
+            if isinstance(size, list):
+                first_size = self.interpreter_node(size[0])
+                second_size = self.interpreter_node(size[1])
+            else:
+                first_size = self.interpreter_node(size)
+            if first_size < 1 or second_size < 0:
+                raise InterpreterIndexError
+        else:
+            first_size = 1
+            second_size = 0
+        if init is not None:
+            pass
+            # initialization = self.makeinitializator(init)
+        else:
+            initialization = Variant(first_size, second_size)
+            initialization = initialization.value
+        if variant.value in self.symbol_table[self.scope].keys():
+            raise InterpreterRedeclarationError
+        else:
+            self.symbol_table[self.scope][variant.value] = initialization
+
+
+data = '''VARIANT a
+VARIANT b
+VARIANT c
+'''
+
+a = Interpreter()
+a.interpreter(data)
+pass
