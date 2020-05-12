@@ -474,28 +474,28 @@ class Parser(object):
             sys.stderr.write(f'Error\n')
         self.ok = False
 
-data = '''VARIANT a [n, 0]
-VARIANT min
-VARIANT i = {{0;}}
-VARIANT j
-j = i
-VARIANT buf
-WHILE j + -n
-min = a[j]
-WHILE i + -n
-IFLESS min, a[i]
-buf = min
-min = a[i]
-a[i] = buf
-ENDIF
-i = i + 1
-ENDW
-j = j + 1
-i = j
-ENDW
-'''
-data1 = '''a = a + .f
-'''
+# data = '''VARIANT a [n, 0]
+# VARIANT min
+# VARIANT i = {{0;}}
+# VARIANT j
+# j = i
+# VARIANT buf
+# WHILE j + -n
+# min = a[j]
+# WHILE i + -n
+# IFLESS min, a[i]
+# buf = min
+# min = a[i]
+# a[i] = buf
+# ENDIF
+# i = i + 1
+# ENDW
+# j = j + 1
+# i = j
+# ENDW
+# '''
+# data1 = '''a = a + .f
+# '''
 # lexer = Lexer()
 # lexer.input(data)
 # while True:
@@ -505,10 +505,10 @@ data1 = '''a = a + .f
 #     else:
 #         print(token)
 
-parser = Parser()
-tree, ok, functions = parser.parse(data)
-tree.print()
-print(ok)
+# parser = Parser()
+# tree, ok, functions = parser.parse(data)
+# tree.print()
+# print(ok)
 # functions['func'].children['body'].print()
 
 # a = x + COMMAND "UP DOWN LOOKUP"

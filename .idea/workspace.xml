@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="522d7431-aa16-4c35-ba74-ea0ad5f2cb64" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Errors/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Errors/errors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/interpreter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parser.out" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Parser/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parsetab.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parsetab.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +37,33 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.parser">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\user\PycharmProjects\Automata2" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.interpreter">
+    <configuration name="interpreter" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Automata2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/interpreter.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="lexer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Automata2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -81,6 +108,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.interpreter" />
         <item itemvalue="Python.parser" />
         <item itemvalue="Python.lexer" />
       </list>
@@ -160,7 +188,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589235516641</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Parser 0.4&#10;-Handling of almost all syntax errors handling added&#10;-All grammar rules added">
+      <created>1589279683014</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1589279683014</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -185,63 +220,64 @@
     <MESSAGE value="Lexer 0.5&#10;-LETTERS token updated one more time" />
     <MESSAGE value="Parser 0.2&#10;-Some syntax errors handling added&#10;-Some more rules added" />
     <MESSAGE value="Parser 0.3&#10;-More syntax errors handling added&#10;-More rules added&#10;-Functions rule added" />
-    <option name="LAST_COMMIT_MESSAGE" value="Parser 0.3&#10;-More syntax errors handling added&#10;-More rules added&#10;-Functions rule added" />
+    <MESSAGE value="Parser 0.4&#10;-Handling of almost all syntax errors handling added&#10;-All grammar rules added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parser 0.4&#10;-Handling of almost all syntax errors handling added&#10;-All grammar rules added" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="729" y="137" key="CommitChangelistDialog2" timestamp="1589235515729">
+    <state x="729" y="137" key="CommitChangelistDialog2" timestamp="1589279682067">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="583" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1589115218590" />
-    <state x="729" y="137" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589235515729" />
+    <state x="729" y="137" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589279682067" />
     <state x="1220" y="278" key="FileChooserDialogImpl" timestamp="1588863189923">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1220" y="278" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588863189923" />
-    <state width="1899" height="387" key="GridCell.Tab.0.bottom" timestamp="1589279509505">
+    <state width="936" height="155" key="GridCell.Tab.0.bottom" timestamp="1589285404338">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1589115047538" />
-    <state width="1899" height="387" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589279509505" />
-    <state width="1899" height="387" key="GridCell.Tab.0.center" timestamp="1589279509505">
+    <state width="936" height="155" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589285404338" />
+    <state width="936" height="155" key="GridCell.Tab.0.center" timestamp="1589285404338">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1589115047537" />
-    <state width="1899" height="387" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589279509505" />
-    <state width="1899" height="387" key="GridCell.Tab.0.left" timestamp="1589279509505">
+    <state width="936" height="155" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589285404338" />
+    <state width="936" height="155" key="GridCell.Tab.0.left" timestamp="1589285404338">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1589115047537" />
-    <state width="1899" height="387" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589279509505" />
-    <state width="1899" height="387" key="GridCell.Tab.0.right" timestamp="1589279509505">
+    <state width="936" height="155" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589285404338" />
+    <state width="936" height="155" key="GridCell.Tab.0.right" timestamp="1589285404338">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1589115047538" />
-    <state width="1899" height="387" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589279509505" />
-    <state width="936" height="144" key="GridCell.Tab.1.bottom" timestamp="1589268891994">
+    <state width="936" height="155" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589285404338" />
+    <state width="936" height="374" key="GridCell.Tab.1.bottom" timestamp="1589283953674">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="936" height="144" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589268891994" />
-    <state width="936" height="144" key="GridCell.Tab.1.center" timestamp="1589268891994">
+    <state width="936" height="374" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589283953674" />
+    <state width="936" height="374" key="GridCell.Tab.1.center" timestamp="1589283953674">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="936" height="144" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589268891994" />
-    <state width="936" height="144" key="GridCell.Tab.1.left" timestamp="1589268891994">
+    <state width="936" height="374" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589283953674" />
+    <state width="936" height="374" key="GridCell.Tab.1.left" timestamp="1589283953674">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="936" height="144" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589268891994" />
-    <state width="936" height="144" key="GridCell.Tab.1.right" timestamp="1589268891994">
+    <state width="936" height="374" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589283953674" />
+    <state width="936" height="374" key="GridCell.Tab.1.right" timestamp="1589283953674">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="936" height="144" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589268891994" />
+    <state width="936" height="374" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589283953674" />
     <state x="461" y="162" key="SettingsEditor" timestamp="1587971099414">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="162" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1587971099414" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1589235518909">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1589279685771">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1589115224437" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589235518909" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589279685771" />
     <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1589262519699">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
