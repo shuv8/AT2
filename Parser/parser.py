@@ -19,7 +19,7 @@ class Parser(object):
     def parse(self, t):
         try:
             res = self.parser.parse(t)
-            return res, self.ok
+            return res, self.ok, self._functions
         except LexError:
             sys.stderr.write(f'Illegal token {t}\n')
 
@@ -45,9 +45,9 @@ class Parser(object):
                         | until NEWLINE
                         | if NEWLINE
                         | command NEWLINE
-                        | statement_error NEWLINE"""
-                        # | function NEWLINE
-                        # | function_call NEWLINE
+                        | function NEWLINE
+                        | function_call NEWLINE"""
+                        # | statement_error
         p[0] = p[1]
 
     def p_empty(self, p):
@@ -140,25 +140,29 @@ class Parser(object):
     def p_expression(self, p):
         """expression : math_expression
                         | const
-                        | variant"""
+                        | variant
+                        | function_call"""
         p[0] = TreeNode('expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_decimal_expression(self, p):
         """decimal_expression : dec_math_expression
                                 | decimal_const
-                                | variant"""
+                                | variant
+                                | function_call"""
         p[0] = TreeNode('decimal_expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_bool_expression(self, p):
         """bool_expression : bool_math_expression
                             | bool_const
-                            | variant"""
+                            | variant
+                            | function_call"""
         p[0] = TreeNode('bool_expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_string_expression(self, p):
         """string_expression : string_math_expression
                             | string_const
-                            | variant"""
+                            | variant
+                            | function_call"""
         p[0] = TreeNode('string_expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     # MATH EXPRESSIONS
@@ -293,20 +297,27 @@ class Parser(object):
                         | until NEWLINE
                         | if NEWLINE
                         | command NEWLINE
-                        | statement_error NEWLINE
                         | function_call NEWLINE
                         | return NEWLINE"""
+                        # | statement_error
         p[0] = p[1]
 
     def p_function(self, p):
-        """function : FUNC NAME func_body_statements ENDFUNC"""
-        pass
+        """function : FUNC NAME NEWLINE func_body_statements ENDFUNC"""
+        self._functions[p[2]] = TreeNode('function', children={'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+        p[0] = TreeNode('func_descriptor', value=p[2], lineno=p.lineno(1), lexpos=p.lexpos(2))
 
     def p_function_call(self, p):
-        pass
+        """function_call : CALL NAME expression
+                            | CALL NAME"""
+        if len(p) == 4:
+            p[0] = TreeNode('function_call', value={'name': p[2]},children=p[3], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        else:
+            p[0] = TreeNode('function_call', value={'name': p[2]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_return(self, p):
-        pass
+        """return : RETURN expression"""
+        p[0] = TreeNode('return', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     # SYNTAX ERRORS
 
@@ -331,7 +342,8 @@ class Parser(object):
         sys.stderr.write(f'==> Error in variant size/index!\n')
 
     def p_assignment_error(self, p):
-        """assignment : variant ASSIGNMENT error"""
+        """assignment : variant ASSIGNMENT error
+                        | error ASSIGNMENT expression"""
         p[0] = TreeNode('error', value='Assignment error', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
         sys.stderr.write(f'==> Assignment error!\n')
 
@@ -356,11 +368,104 @@ class Parser(object):
         p[0] = TreeNode('error', value='Command error', lineno=p.lineno(1), lexpos=p.lexpos(1))
         sys.stderr.write(f'==> Error in a command!\n')
 
-    def p_statement_error(self, p):
-        """statement_error : error
-                            | statement_error error"""
-        p[0] = TreeNode('error', value='Very plohaya error', lineno=p.lineno(1), lexpos=p.lexpos(1))
-        sys.stderr.write(f'==> Error in a whole line!\n')
+    # def p_statement_error(self, p):
+    #     """statement_error : error NEWLINE
+    #                         | statement_error error NEWLINE"""
+    #     p[0] = TreeNode('error', value='Very plohaya error', lineno=p.lineno(1), lexpos=p.lexpos(1))
+    #     sys.stderr.write(f'==> Error in a whole line!\n')
+
+    def p_while_error(self, p):
+        """while : WHILE error NEWLINE statements ENDW
+                    | WHILE bool_expression NEWLINE statements error
+                    | WHILE bool_expression statements ENDW
+                    | while error"""
+        if len(p) == 6:
+            p[0] = TreeNode('while_error', value='While error', children={'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+            sys.stderr.write(f'==> Error in \'while\'!\n')
+        elif len(p) == 5:
+            p[0] = TreeNode('while_error', value='While error', children={'body': p[3]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+            try:
+                sys.stderr.write(f'Error at {p.lineno(1)} line\n')
+            except:
+                sys.stderr.write(f'Error\n')
+            sys.stderr.write(f'==> Condition and body are on the same line!\n')
+            self.ok = False
+        else:
+            p[0] = TreeNode('while_error', value='While error', lineno=p.lineno(1), lexpos=p.lexpos(1))
+            sys.stderr.write(f'==> Error in \'while\'!\n')
+
+    def p_until_error(self, p):
+        """until : UNTIL error NEWLINE statements ENDU
+                    | UNTIL bool_expression NEWLINE statements error
+                    | UNTIL bool_expression statements ENDU
+                    | until error"""
+        if len(p) == 6:
+            p[0] = TreeNode('until_error', value='Until error', children={'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+            sys.stderr.write(f'==> Error in \'until\'!\n')
+        elif len(p) == 5:
+            p[0] = TreeNode('until_error', value='Until error', children={'body': p[3]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+            try:
+                sys.stderr.write(f'Error at {p.lineno(1)} line\n')
+            except:
+                sys.stderr.write(f'Error\n')
+            sys.stderr.write(f'==> Condition and body are on the same line!\n')
+            self.ok = False
+        else:
+            p[0] = TreeNode('until_error', value='While error', lineno=p.lineno(1), lexpos=p.lexpos(1))
+            sys.stderr.write(f'==> Error in \'until\'!\n')
+
+    def p_if_error(self, p):
+        """if : IFLESS error NEWLINE statements ENDIF
+              | IFNLESS error NEWLINE statements ENDIF
+              | IFZERO error NEWLINE statements ENDIF
+              | IFNZERO error NEWLINE statements ENDIF
+              | IFHIGH error NEWLINE statements ENDIF
+              | IFNHIGH error NEWLINE statements ENDIF
+
+              | IFLESS decimal_expression COMMA decimal_expression NEWLINE statements error
+              | IFNLESS decimal_expression COMMA decimal_expression NEWLINE statements error
+              | IFZERO decimal_expression NEWLINE statements error
+              | IFNZERO decimal_expression NEWLINE statements error
+              | IFHIGH decimal_expression COMMA decimal_expression NEWLINE statements error
+              | IFNHIGH decimal_expression COMMA decimal_expression NEWLINE statements error
+
+              | IFLESS decimal_expression COMMA decimal_expression statements ENDIF
+              | IFNLESS decimal_expression COMMA decimal_expression statements ENDIF
+              | IFZERO decimal_expression statements ENDIF
+              | IFNZERO decimal_expression statements ENDIF
+              | IFHIGH decimal_expression COMMA decimal_expression statements ENDIF
+              | IFNHIGH decimal_expression COMMA decimal_expression statements ENDIF
+
+              | if error"""
+        p[0] = TreeNode('if_error', value='\'If\' error', lineno=p.lineno(1), lexpos=p.lexpos(1))
+        if len(p) == 7 or len(p) == 5:
+            try:
+                sys.stderr.write(f'Error at {p.lineno(1)} line\n')
+            except:
+                sys.stderr.write(f'Error\n')
+            sys.stderr.write(f'==> Condition and body are on the same line!\n')
+            self.ok = False
+        else:
+            sys.stderr.write(f'==> Error in \'if\' conditions!\n')
+
+    def p_function_error(self, p):
+        """function : FUNC error NEWLINE func_body_statements ENDFUNC
+                    | FUNC NAME NEWLINE func_body_statements error
+                    | FUNC error NEWLINE func_body_statements error
+                    | function error"""
+        if len(p) == 6:
+            self._functions[p[2]] = TreeNode('function_error', children={'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
+            p[0] = TreeNode('func_error', value='Function error!', lineno=p.lineno(1), lexpos=p.lexpos(2))
+            sys.stderr.write(f'==> Error in a function syntax!\n')
+        else:
+            p[0] = TreeNode('func_error', value='Function error!', lineno=p.lineno(1), lexpos=p.lexpos(2))
+            sys.stderr.write(f'==> Error in a function!\n')
+
+    def p_return_error(self, p):
+        """return : RETURN error
+                    | return error"""
+        p[0] = TreeNode('return_error', value='Return error', lineno=p.lineno(1), lexpos=p.lexpos(1))
+        sys.stderr.write(f'==> Error in return!\n')
 
     def p_error(self, p):
         try:
@@ -369,7 +474,27 @@ class Parser(object):
             sys.stderr.write(f'Error\n')
         self.ok = False
 
-data = ''' VARIANT param
+data = '''VARIANT a [n, 0]
+VARIANT min
+VARIANT i = {{0;}}
+VARIANT j
+j = i
+VARIANT buf
+WHILE j + -n
+min = a[j]
+WHILE i + -n
+IFLESS min, a[i]
+buf = min
+min = a[i]
+a[i] = buf
+ENDIF
+i = i + 1
+ENDW
+j = j + 1
+i = j
+ENDW
+'''
+data1 = '''a = a + .f
 '''
 # lexer = Lexer()
 # lexer.input(data)
@@ -381,9 +506,10 @@ data = ''' VARIANT param
 #         print(token)
 
 parser = Parser()
-tree, ok = parser.parse(data)
+tree, ok, functions = parser.parse(data)
 tree.print()
 print(ok)
+# functions['func'].children['body'].print()
 
 # a = x + COMMAND "UP DOWN LOOKUP"
 # a = a + bcd + 12 + "letters" - что делать
