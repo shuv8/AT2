@@ -145,6 +145,10 @@ class Interpreter:
             return self.interpreter_node(node.children)
         elif node.type == 'const_expression':
             return self.interpreter_node(node.children)
+        elif node.type == 'unar_op':
+            return self.unar_minus(node.children)
+        elif node.type == 'bin_op':
+            return self.bin_plus(node.children[0], node.children[1])
         elif node.type == 'decimal_expression':
             return self.interpreter_node(node.children)
         elif node.type == 'bool_expression':
@@ -157,7 +161,15 @@ class Interpreter:
             if var_name not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
             else:
-                pass
+                expression = self.interpreter_node(node.children)
+                if node.value.children is not None:
+                    pass
+                else:
+                    index = None
+                try:
+                    self.assign(var_name, expression, index)
+                except:
+                    pass
 
 
 
@@ -176,6 +188,7 @@ class Interpreter:
             second_size = 0
         if init is not None:
             pass
+            # TODO: declaration with initialization
             # initialization = self.makeinitializator(init)
         else:
             initialization = Variant(first_size, second_size)
@@ -185,12 +198,43 @@ class Interpreter:
         else:
             self.symbol_table[self.scope][variant.value] = initialization
 
+    def assign(self, variant, expression, index = None):
+        if index is not None:
+            pass
+            # TODO: assignment for variant element
+        else:
+            if isinstance(expression, list):
+                self.symbol_table[self.scope][variant] = expression
+            else:
+                if type(expression) == int:
+                    expr_type = 'int'
+                elif type(expression) == bool:
+                    expr_type = 'bool'
+                elif type(expression) == str:
+                    expr_type = 'string'
 
-data = '''VARIANT a
-VARIANT b
-VARIANT c
-'''
+                if isinstance(self.symbol_table[self.scope][variant][0], dict):
+                    for elem in self.symbol_table[self.scope][variant]:
+                        elem[expr_type] = expression
+                elif isinstance(self.symbol_table[self.scope][variant][0], list):
+                    for elem1 in self.symbol_table[self.scope][variant]:
+                        for elem2 in self.symbol_table[self.scope][variant][elem1]:
+                            elem2[expr_type] = expression
 
-a = Interpreter()
-a.interpreter(data)
-pass
+    def un_minus(self, _expression):
+        pass
+        # TODO: unar minus
+
+    def bin_plus(self, _expression1, _expression2):
+        pass
+        # TODO: binary plus
+
+
+# data = '''VARIANT a
+# VARIANT b
+# VARIANT c
+# '''
+#
+# a = Interpreter()
+# a.interpreter(data)
+# pass
