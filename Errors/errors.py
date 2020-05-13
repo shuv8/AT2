@@ -9,6 +9,7 @@ class Error_Handler:
                       'RedeclarationError',
                       'UndeclaredError',
                       'IndexError',
+                      'InitSizeError'
                       'ConvertationError',
                       'ParametrError']
 
@@ -20,19 +21,24 @@ class Error_Handler:
             pass
         elif self.type == 1:
             if isinstance(node.children, list):
-                sys.stderr.write(f'Variable "{self.node.children[0].value}" at line {self.node.lineno} is already declared\n')
+                sys.stderr.write(f'Variant "{self.node.children[0].value}" at line {self.node.lineno} is already declared\n')
             else:
-                sys.stderr.write(f'Variable "{self.node.children.value}" at line {self.node.lineno} is already declared\n')
+                sys.stderr.write(f'Variant "{self.node.children.value}" at line {self.node.lineno} is already declared\n')
         elif self.type == 2:
             if self.node.type == 'assignment':
-                sys.stderr.write(f'Variant {self.node.value.value} at line {self.node.lineno} is used before declaration.')
+                sys.stderr.write(f'Variant {self.node.value.value} at line {self.node.lineno} is used before declaration\n')
         elif self.type == 3:
             if node.type == 'declaration':
                 if isinstance(node.children, list):
-                    sys.stderr.write(f'Variable "{node.children[0].value}" has wrong indexation at line {self.node.lineno}')
+                    sys.stderr.write(f'Variant "{node.children[0].value}" has wrong indexation at line {self.node.lineno}\n')
                 else:
-                    sys.stderr.write(f'Variable "{node.children.value}" has wrong indexation at line {self.node.lineno}')
-
+                    sys.stderr.write(f'Variant "{node.children.value}" has wrong indexation at line {self.node.lineno}\n')
+        elif self.type == 4:
+            if node.type == 'declaration':
+                if isinstance(node.children, list):
+                    sys.stderr.write(f'Variant "{node.children[0].value.value}" at line {self.node.lineno} size doesn\'t match initializator size\n')
+                else:
+                    sys.stderr.write(f'Variant "{node.children.value.value}" at line {self.node.lineno} size doesn\'t match initializator size\n')
 
 
 class InterpreterConvertationError(Exception):
@@ -48,5 +54,9 @@ class InterpreterRedeclarationError(Exception):
 
 
 class InterpreterIndexError(Exception):
+    pass
+
+
+class InterpreterInitSizeError(Exception):
     pass
 
