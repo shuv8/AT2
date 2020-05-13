@@ -7,6 +7,7 @@ from Errors.errors import InterpreterConvertationError
 from Errors.errors import InterpreterParametrError
 from Errors.errors import InterpreterRedeclarationError
 from Errors.errors import InterpreterIndexError
+from Errors.errors import InterpreterInitSizeError
 
 
 class Variant:
@@ -98,7 +99,9 @@ class Interpreter:
                             'RedeclarationError': 1,
                             'UndeclaredError': 2,
                             'IndexError': 3,
-                            'ConvertationError': 4}
+                            'InitSizeError': 4,
+                            'ConvertationError': 5,
+                            'ParametrError': 6}
 
     def interpreter(self, program=None):
         self.program = program
@@ -133,7 +136,15 @@ class Interpreter:
         elif node.type == 'declaration':
             declaration_child = node.children
             if isinstance(declaration_child, list):
-                pass
+                initialization = node.children[1]
+                try:
+                    self.declare_variant(declaration_child[0], initialization)
+                except InterpreterRedeclarationError:
+                    self.error.call(self.error_types['RedeclarationError'], node)
+                except InterpreterIndexError:
+                    self.error.call(self.error_types['IndexError'], node)
+                except InterpreterInitSizeError:
+                    self.error.call(self.error_types['InitSizeError'], node)
             else:
                 try:
                     self.declare_variant(declaration_child)
@@ -143,8 +154,19 @@ class Interpreter:
                     self.error.call(self.error_types['IndexError'], node)
         elif node.type == 'expression':
             return self.interpreter_node(node.children)
+        elif node.type == 'const_expressions':
+            buf = []
+            if isinstance(self.interpreter_node(node.children[0]), list):
+                for buf1 in self.interpreter_node(node.children[0]):
+                    buf.append(buf1)
+            else:
+                buf.append(self.interpreter_node(node.children[0]))
+            buf.append(self.interpreter_node(node.children[1]))
+            return buf
         elif node.type == 'const_expression':
             return self.interpreter_node(node.children)
+        elif node.type == 'decimal_const' or node.type == 'bool_const' or node.type == 'string_const':
+            return node.value
         elif node.type == 'unar_op':
             return self.unar_minus(node.children)
         elif node.type == 'bin_op':
@@ -176,27 +198,44 @@ class Interpreter:
     def declare_variant(self, variant, init=None):
         if variant.children is not None:
             size = variant.children.children
+            name = variant.value
             if isinstance(size, list):
                 first_size = self.interpreter_node(size[0])
                 second_size = self.interpreter_node(size[1])
             else:
                 first_size = self.interpreter_node(size)
-            if first_size < 1 or second_size < 0:
+            if first_size < 0 or second_size < 0:
                 raise InterpreterIndexError
+        elif variant.type == 'init' and variant.value.children is not None:
+            size = variant.value.children.children
+            name = variant.value.value
+            if isinstance(size, list):
+                first_size = self.interpreter_node(size[0])
+                second_size = self.interpreter_node(size[1])
+            else:
+                first_size = self.interpreter_node(size)
+            if first_size < 0 or second_size < 0:
+                raise InterpreterIndexError
+        elif variant.type == 'init':
+            name = variant.value.value
+            first_size = 1
+            second_size = 0
         else:
             first_size = 1
             second_size = 0
+            name = variant.value
         if init is not None:
-            pass
-            # TODO: declaration with initialization
-            # initialization = self.makeinitializator(init)
+            initialization, init_size = self.makeinitializator(init)
         else:
             initialization = Variant(first_size, second_size)
             initialization = initialization.value
-        if variant.value in self.symbol_table[self.scope].keys():
+            init_size = [first_size, second_size]
+        if name in self.symbol_table[self.scope].keys():
             raise InterpreterRedeclarationError
+        if init_size[0] != first_size or init_size[1] != second_size:
+            raise InterpreterInitSizeError
         else:
-            self.symbol_table[self.scope][variant.value] = initialization
+            self.symbol_table[self.scope][name] = initialization
 
     def assign(self, variant, expression, index = None):
         if index is not None:
@@ -221,6 +260,58 @@ class Interpreter:
                         for elem2 in self.symbol_table[self.scope][variant][elem1]:
                             elem2[expr_type] = expression
 
+    def makeinitializator(self, initialization):
+        if initialization.type == 'init_lists':
+            pass
+            # TODO: init lists (size of variant [>1, ...]
+        else:
+            init_size = [1]
+            if initialization.type == 'empty_init_list':
+                init_size.append(0)
+                init = Variant(init_size[0])
+                return init, init_size
+            elif initialization.type == 'init_list':
+                initializator = initialization.children
+            if initializator.type == 'inits':
+                second_size = 2
+                pass
+            # TODO: inits (size of variant [..., >1]
+            elif initializator.type == 'const_expression':
+                init_size.append(0)
+                init = Variant(init_size[0])
+                init = init.value
+                init1 = self.interpreter_node(initializator.children[0])
+                if type(init1) == int:
+                    init[0]['int'] = init1
+                elif type(init1) == bool:
+                    init[0]['bool'] = init1
+                elif type(init1) == str:
+                    init[0]['string'] = init1
+                return init, init_size
+            elif initializator.type == 'const_expressions':
+                init_size.append(0)
+                init = Variant(init_size[0])
+                init = init.value
+                _init = []
+                inits = self.interpreter_node(initializator.children[0])
+                if isinstance(self.interpreter_node(initializator.children[0]), list):
+                    for init1 in inits:
+                        _init.append(init1)
+                else:
+                    _init.append(self.interpreter_node(initializator.children[0]))
+                _init.append(self.interpreter_node(initializator.children[1]))
+                for i in _init:
+                    if type(i) == int:
+                        init[0]['int'] = i
+                    elif type(i) == bool:
+                        init[0]['bool'] = i
+                    elif type(i) == str:
+                        init[0]['string'] = i
+                return init, init_size
+
+
+
+
     def un_minus(self, _expression):
         pass
         # TODO: unar minus
@@ -230,11 +321,12 @@ class Interpreter:
         # TODO: binary plus
 
 
-# data = '''VARIANT a
-# VARIANT b
-# VARIANT c
-# '''
-#
-# a = Interpreter()
-# a.interpreter(data)
-# pass
+data = '''VARIANT a [1, 2] = {{123, TRUE;}}
+'''
+
+a = Interpreter()
+a.interpreter(data)
+pass
+
+# a = Variant(1, 4)
+# print(a)
