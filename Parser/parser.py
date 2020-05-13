@@ -104,7 +104,7 @@ class Parser(object):
         if len(p) == 4:
             p[0] = TreeNode('init_list', children=p[2])
         else:
-            p[0] = TreeNode('empty init list', lineno=p.lineno(1), lexpos=p.lexpos(1))
+            p[0] = TreeNode('empty_init_list', lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_inits(self, p):
         """inits : inits init
@@ -118,9 +118,9 @@ class Parser(object):
         """init : const_expressions COMMA const_expression SEMICOLON
                     | const_expression SEMICOLON"""
         if len(p) == 3:
-            p[0] = TreeNode('expression', children=[p[1]])
+            p[0] = TreeNode('const_expression', children=[p[1]])
         else:
-            p[0] = TreeNode('expressions', children=[p[1], p[3]])
+            p[0] = TreeNode('const_expressions', children=[p[1], p[3]])
 
     # EXPRESSIONS
 
@@ -210,11 +210,10 @@ class Parser(object):
     # CONSTANTS
 
     def p_const(self, p):
-        """const : TRUE
-                | FALSE
-                | DECIMAL
-                | LETTERS"""
-        p[0] = TreeNode('const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        """const : bool_const
+                | decimal_const
+                | string_const"""
+        p[0] = p[1]
 
     def p_decimal_const(self, p):
         """decimal_const : DECIMAL"""
@@ -223,7 +222,11 @@ class Parser(object):
     def p_bool_const(self, p):
         """bool_const : TRUE
                         | FALSE"""
-        p[0] = TreeNode('bool_const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        if p[1] == 'TRUE':
+            val = True
+        else:
+            val = False
+        p[0] = TreeNode('bool_const', value=val, lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_string_const(self, p):
         """string_const : LETTERS"""
