@@ -225,7 +225,7 @@ class Interpreter:
             second_size = 0
             name = variant.value
         if init is not None:
-            initialization, init_size = self.makeinitializator(init)
+            initialization, init_size = self.initialize(init, first_size, second_size)
         else:
             initialization = Variant(first_size, second_size)
             initialization = initialization.value
@@ -260,46 +260,105 @@ class Interpreter:
                         for elem2 in self.symbol_table[self.scope][variant][elem1]:
                             elem2[expr_type] = expression
 
+    def initialize(self, initialization, first_size=1, second_size=0):
+        _init = self.makeinitializator(initialization)
+        init_size = []
+        if type(_init[0]) == dict:
+            init_size.append(1)
+        elif type(_init[0]) == list:
+            init_size.append(len(_init))
+        if init_size[0] > first_size:
+            return _init, init_size
+        if type(_init[0]) == dict and first_size > 1:
+            init = []
+            init.append(_init)
+        else:
+            init = _init
+        while init_size[0] < first_size:
+            buf = Variant(1, second_size)
+            init.append(buf.value[0])
+            init_size[0] += 1
+
+        if type(init[0]) == dict:
+            sec_size = len(init)
+            if second_size > 0 and sec_size == 0:
+                num = second_size - sec_size - 1
+            else:
+                num = second_size - sec_size
+            if num > 0:
+                buf = Variant(1, num)
+                for init1 in buf.value[0]:
+                    init.append(init1)
+            elif num < 0:
+                init_size.append(sec_size)
+                return init, init_size
+            init_size.append(second_size)
+        else:
+            for elem in init:
+                sec_size = len(elem)
+                if second_size > 0 and sec_size == 0:
+                    num = second_size - sec_size - 1
+                else:
+                    num = second_size - sec_size
+                if num > 0:
+                    buf = Variant(1, num)
+                    for init1 in buf.value[0]:
+                        elem.append(init1)
+                elif num < 0:
+                    init_size.append(sec_size)
+                    return init, init_size
+            init_size.append(second_size)
+        return init, init_size
+
+
     def makeinitializator(self, initialization):
         if initialization.type == 'init_lists':
-            pass
-            # TODO: init lists (size of variant [>1, ...]
+            init = []
+            first = self.makeinitializator(initialization.children[0])
+            if type(first[0]) == list:
+                for first_init in first:
+                    init.append(first_init)
+            else:
+                init.append(first)
+            last = self.makeinitializator(initialization.children[1])
+            init.append(last)
+            return init
         else:
-            init_size = [1]
             if initialization.type == 'empty_init_list':
-                init_size.append(0)
-                init = Variant(init_size[0])
-                return init, init_size
+                init = Variant(1)
+                return init
             elif initialization.type == 'init_list':
-                initializator = initialization.children
-            if initializator.type == 'inits':
-                second_size = 2
-                pass
-            # TODO: inits (size of variant [..., >1]
-            elif initializator.type == 'const_expression':
-                init_size.append(0)
-                init = Variant(init_size[0])
+                initialization = initialization.children
+            if initialization.type == 'inits':
+                init = []
+                first = self.makeinitializator(initialization.children[0])
+                for init1 in first:
+                    init.append(init1)
+                last = self.makeinitializator(initialization.children[1])
+                init.append(last[0])
+                return init
+            elif initialization.type == 'const_expression':
+                init = Variant(1)
                 init = init.value
-                init1 = self.interpreter_node(initializator.children[0])
+                init1 = self.interpreter_node(initialization.children[0])
                 if type(init1) == int:
                     init[0]['int'] = init1
                 elif type(init1) == bool:
                     init[0]['bool'] = init1
                 elif type(init1) == str:
                     init[0]['string'] = init1
-                return init, init_size
-            elif initializator.type == 'const_expressions':
-                init_size.append(0)
-                init = Variant(init_size[0])
+                return init
+            elif initialization.type == 'const_expressions':
+                init = Variant(1)
                 init = init.value
                 _init = []
-                inits = self.interpreter_node(initializator.children[0])
-                if isinstance(self.interpreter_node(initializator.children[0]), list):
+                inits = self.interpreter_node(initialization.children[0])
+                if isinstance(self.interpreter_node(initialization.children[0]), list):
                     for init1 in inits:
                         _init.append(init1)
                 else:
-                    _init.append(self.interpreter_node(initializator.children[0]))
-                _init.append(self.interpreter_node(initializator.children[1]))
+                    _init.append(self.interpreter_node(initialization.children[0]))
+                _init.append(self.interpreter_node(initialization.children[1]))
                 for i in _init:
                     if type(i) == int:
                         init[0]['int'] = i
@@ -307,7 +366,7 @@ class Interpreter:
                         init[0]['bool'] = i
                     elif type(i) == str:
                         init[0]['string'] = i
-                return init, init_size
+                return init
 
 
 
@@ -321,7 +380,7 @@ class Interpreter:
         # TODO: binary plus
 
 
-data = '''VARIANT a [1, 2] = {{123, TRUE;}}
+data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
 '''
 
 a = Interpreter()
