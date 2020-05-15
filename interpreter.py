@@ -8,7 +8,7 @@ from Errors.errors import InterpreterParametrError
 from Errors.errors import InterpreterRedeclarationError
 from Errors.errors import InterpreterIndexError
 from Errors.errors import InterpreterInitSizeError
-
+from Errors.errors import InterpreterUndeclaredError
 
 class Variant:
     def __init__(self, first_size=1, second_size=0):
@@ -154,6 +154,19 @@ class Interpreter:
                     self.error.call(self.error_types['IndexError'], node)
         elif node.type == 'expression':
             return self.interpreter_node(node.children)
+        elif node.type == 'variant':
+            if node.children is not None:
+                index = node.children.children
+                _index = []
+                if isinstance(index, list):
+                    _index.append(self.interpreter_node(index[0]))
+                    _index.append(self.interpreter_node(index[1]))
+                else:
+                    _index.append(self.interpreter_node(index))
+            else:
+                _index = None
+            return self.get_variant_value(node, index=_index)
+
         elif node.type == 'const_expressions':
             buf = []
             if isinstance(self.interpreter_node(node.children[0]), list):
@@ -179,19 +192,33 @@ class Interpreter:
             return self.interpreter_node(node.children)
         elif node.type == 'assignment':
             var_name = node.value.value
-            index = 0
             if var_name not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
             else:
-                expression = self.interpreter_node(node.children)
+                er = 0
+                try:
+                    expression = self.interpreter_node(node.children)
+                except InterpreterUndeclaredError:
+                    self.error.call(self.error_types['UndeclaredError'], node.children)
+                    er = 1
+                except InterpreterIndexError:
+                    self.error.call(self.error_types['IndexError'], node.children.children)
+                    er = 1
                 if node.value.children is not None:
-                    pass
+                    _index = node.value.children.children
+                    index = []
+                    if isinstance(_index, list):
+                        index.append(self.interpreter_node(_index[0]))
+                        index.append(self.interpreter_node(_index[1]))
+                    else:
+                        index.append(self.interpreter_node(_index))
                 else:
                     index = None
-                try:
-                    self.assign(var_name, expression, index)
-                except:
-                    pass
+                if er == 0:
+                    try:
+                        self.assign(var_name, expression, index)
+                    except InterpreterIndexError:
+                        self.error.call(self.error_types['IndexError'], node)
 
 
 
@@ -204,6 +231,7 @@ class Interpreter:
                 second_size = self.interpreter_node(size[1])
             else:
                 first_size = self.interpreter_node(size)
+                second_size = 0
             if first_size < 0 or second_size < 0:
                 raise InterpreterIndexError
         elif variant.type == 'init' and variant.value.children is not None:
@@ -239,8 +267,55 @@ class Interpreter:
 
     def assign(self, variant, expression, index = None):
         if index is not None:
-            pass
-            # TODO: assignment for variant element
+            new_size = []
+            if index[0]>0:
+                new_size.append(index[0] + 1)
+            else:
+                new_size.append(0)
+            if len(index) > 1 and index[1] > 0:
+                new_size.append(index[1] + 1)
+            else:
+                if len(index) > 1 and index[1] == 0 and isinstance(expression, list) and len(expression) > 1:
+                    raise InterpreterIndexError
+                elif isinstance(expression, list) and len(expression) > 1:
+                    new_size.append(len(expression))
+                else:
+                    new_size.append(0)
+            self.extend(variant, new_size)
+            if len(index) == 2:
+                if isinstance(expression, list):
+                    self.symbol_table[self.scope][variant][index[0]][index[1]] = expression[0]
+                else:
+                    if type(expression) == int:
+                        expr_type = 'int'
+                    elif type(expression) == bool:
+                        expr_type = 'bool'
+                    elif type(expression) == str:
+                        expr_type = 'string'
+                    self.symbol_table[self.scope][variant][index[0]][index[1]][expr_type] = expression
+            else:
+                if isinstance(expression, list) and isinstance(expression[0], dict):
+                    if isinstance(self.symbol_table[self.scope][variant][index[0]], list):
+                        self.symbol_table[self.scope][variant][index[0]] = expression
+                    if isinstance(self.symbol_table[self.scope][variant][index[0]], dict):
+                        self.symbol_table[self.scope][variant][index[0]] = expression[0]
+                elif isinstance(expression, list) and isinstance(expression[0], list):
+                    self.symbol_table[self.scope][variant][index[0]] = expression[0]
+                elif isinstance(expression, dict) and isinstance(self.symbol_table[self.scope][variant][index[0]], dict):
+                        self.symbol_table[self.scope][variant][index[0]] = expression
+                else:
+                    if type(expression) == int:
+                        expr_type = 'int'
+                    elif type(expression) == bool:
+                        expr_type = 'bool'
+                    elif type(expression) == str:
+                        expr_type = 'string'
+                    if isinstance(self.symbol_table[self.scope][variant][index[0]], list):
+                        for elem2 in self.symbol_table[self.scope][variant][index[0]]:
+                            elem2[expr_type] = expression
+                    else:
+                        self.symbol_table[self.scope][variant][index[0]][expr_type] = expression
+
         else:
             if isinstance(expression, list):
                 self.symbol_table[self.scope][variant] = expression
@@ -259,6 +334,56 @@ class Interpreter:
                     for elem1 in self.symbol_table[self.scope][variant]:
                         for elem2 in self.symbol_table[self.scope][variant][elem1]:
                             elem2[expr_type] = expression
+
+    def extend(self, variant, new_size):
+        if len(self.symbol_table[self.scope][variant]) < new_size[0]:
+            buf = Variant(new_size[0] - len(self.symbol_table[self.scope][variant]), 0).value
+            if isinstance(self.symbol_table[self.scope][variant][0], dict) and (len(new_size) == 2 and new_size[1]>0):
+                self.symbol_table[self.scope][variant] = [self.symbol_table[self.scope][variant]]
+                for elem in buf:
+                    self.symbol_table[self.scope][variant].append([elem])
+            elif isinstance(self.symbol_table[self.scope][variant][0], list):
+                for elem in buf:
+                    self.symbol_table[self.scope][variant].append([elem])
+            else:
+                for elem in buf:
+                    self.symbol_table[self.scope][variant].append(elem)
+
+        if len(new_size) == 2:
+            for element in self.symbol_table[self.scope][variant]:
+                if len(element) > new_size[1]:
+                    new_size[1] = len(element)
+                sec_size = new_size[1] - len(element)
+                if sec_size == 0:
+                    sec_size = -1
+                if sec_size == 1:
+                    sec_size = 0
+                if sec_size > -1:
+                    buf = Variant(1, sec_size).value
+                    if isinstance(buf[0], list):
+                        buf = buf[0]
+                    for el in buf:
+                        element.append(el)
+
+    def get_variant_value(self, variant, index = None):
+        if variant.value not in self.symbol_table[self.scope].keys():
+            raise InterpreterUndeclaredError
+        else:
+            if index is not None:
+                if index[0] > 1 and type(self.symbol_table[self.scope][variant.value][0]) == list and len(
+                        self.symbol_table[self.scope][variant.value]) - 1 < index[0]:
+                    raise InterpreterIndexError
+                elif index[0] > 1 and len(index) == 2 and index[1] > 0 and type(self.symbol_table[self.scope][variant.value][0]) == dict:
+                    raise InterpreterIndexError
+                if len(index) == 1:
+                        return self.symbol_table[self.scope][variant.value][index[0]]
+                else:
+                    if len(self.symbol_table[self.scope][variant.value][index[0]]) < index[1]:
+                        raise InterpreterIndexError
+                    else:
+                        return [self.symbol_table[self.scope][variant.value][index[0]][index[1]]]
+            else:
+                return self.symbol_table[self.scope][variant.value]
 
     def initialize(self, initialization, first_size=1, second_size=0):
         _init = self.makeinitializator(initialization)
@@ -281,6 +406,8 @@ class Interpreter:
 
         if type(init[0]) == dict:
             sec_size = len(init)
+            if sec_size == 1:
+                sec_size = 0
             if second_size > 0 and sec_size == 0:
                 num = second_size - sec_size - 1
             else:
@@ -309,7 +436,6 @@ class Interpreter:
                     return init, init_size
             init_size.append(second_size)
         return init, init_size
-
 
     def makeinitializator(self, initialization):
         if initialization.type == 'init_lists':
@@ -381,10 +507,16 @@ class Interpreter:
 
 
 data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
+VARIANT b [1, 5]
+b [2] = TRUE
 '''
-
+data1 ='''VARIANT a[3, 2] ={{1;2;}{TRUE;TRUE;}{"LOL";"KEK";}}
+a [5] = "HEHE"
+VARIANT b
+b [8] = a[2]
+'''
 a = Interpreter()
-a.interpreter(data)
+a.interpreter(data1)
 pass
 
 # a = Variant(1, 4)
