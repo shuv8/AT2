@@ -10,6 +10,7 @@ from Errors.errors import InterpreterRedeclarationError
 from Errors.errors import InterpreterIndexError
 from Errors.errors import InterpreterInitSizeError
 from Errors.errors import InterpreterUndeclaredError
+from Errors.errors import InterpreterSumSizeError
 
 class Variant:
     def __init__(self, first_size=1, second_size=0):
@@ -184,7 +185,11 @@ class Interpreter:
         elif node.type == 'unar_op':
             return self.unar_minus(node.children)
         elif node.type == 'bin_op':
-            return self.bin_plus(node.children[0], node.children[1])
+            try:
+                res = self.bin_plus(node.children[0], node.children[1])
+            except InterpreterSumSizeError:
+                self.error.call(self.error_types['SumSizeError'], node)
+            return res
         elif node.type == 'decimal_expression':
             buf = self.interpreter_node(node.children)
             if isinstance(buf, list):
@@ -587,6 +592,9 @@ class Interpreter:
             elif type(value1) == str:
                 value2 = value2['string']
                 value = value1 + value2
+        if type(value1) == list and type(value2) == list:
+            if len(value1) != len(value2):
+                raise InterpreterSumSizeError
         # elif type(value1) == list:
         #     for elem in value:
         #         if isinstance(elem, list):
