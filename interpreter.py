@@ -1,5 +1,6 @@
 import sys
 import re
+import copy
 from Parser.parser import Parser
 from SyntaxTree.Tree import TreeNode
 from Errors.errors import Error_Handler
@@ -185,7 +186,13 @@ class Interpreter:
         elif node.type == 'bin_op':
             return self.bin_plus(node.children[0], node.children[1])
         elif node.type == 'decimal_expression':
-            return self.interpreter_node(node.children)
+            buf = self.interpreter_node(node.children)
+            if isinstance(buf, list):
+                return buf[0]['int']
+            elif isinstance(buf, dict):
+                return buf['int']
+            elif type(buf) == int:
+                return buf
         elif node.type == 'bool_expression':
             return self.interpreter_node(node.children)
         elif node.type == 'string_expression':
@@ -210,8 +217,14 @@ class Interpreter:
                     if isinstance(_index, list):
                         index.append(self.interpreter_node(_index[0]))
                         index.append(self.interpreter_node(_index[1]))
+                        if index[0] < 0 or index[1] < 0:
+                            self.error.call(self.error_types['IndexError'], node.children)
+                            er = 1
                     else:
                         index.append(self.interpreter_node(_index))
+                        if index[0] < 0:
+                            self.error.call(self.error_types['IndexError'], node.children)
+                            er = 1
                 else:
                     index = None
                 if er == 0:
@@ -376,14 +389,14 @@ class Interpreter:
                 elif index[0] > 1 and len(index) == 2 and index[1] > 0 and type(self.symbol_table[self.scope][variant.value][0]) == dict:
                     raise InterpreterIndexError
                 if len(index) == 1:
-                        return self.symbol_table[self.scope][variant.value][index[0]]
+                        return copy.deepcopy(self.symbol_table[self.scope][variant.value][index[0]])
                 else:
                     if len(self.symbol_table[self.scope][variant.value][index[0]]) < index[1]:
                         raise InterpreterIndexError
                     else:
-                        return [self.symbol_table[self.scope][variant.value][index[0]][index[1]]]
+                        return copy.deepcopy([self.symbol_table[self.scope][variant.value][index[0]][index[1]]])
             else:
-                return self.symbol_table[self.scope][variant.value]
+                return copy.deepcopy(self.symbol_table[self.scope][variant.value])
 
     def initialize(self, initialization, first_size=1, second_size=0):
         _init = self.makeinitializator(initialization)
@@ -497,9 +510,40 @@ class Interpreter:
 
 
 
-    def un_minus(self, _expression):
-        pass
-        # TODO: unar minus
+    def unar_minus(self, _expression):
+        value = self.interpreter_node(_expression)
+        if type(value) == int:
+            value = - value
+        elif type(value) == bool:
+            if value:
+                value = False
+            else:
+                value = True
+        elif type(value) == str:
+            pass
+            # TODO: minus for strings(robot commands)
+        elif type(value) == dict:
+            value['int'] = -value['int']
+            if value['bool']:
+                value['bool'] = False
+            else:
+                value['bool'] = True
+        elif type(value) == list:
+            for elem in value:
+                if isinstance(elem, list):
+                    for elem1 in elem:
+                        elem1['int'] = -elem1['int']
+                        if elem1['bool']:
+                            elem1['bool'] = False
+                        else:
+                            elem1['bool'] = True
+                else:
+                    elem['int'] = -elem['int']
+                    if elem['bool']:
+                        elem['bool'] = False
+                    else:
+                        elem['bool'] = True
+        return value
 
     def bin_plus(self, _expression1, _expression2):
         pass
@@ -511,9 +555,7 @@ VARIANT b [1, 5]
 b [2] = TRUE
 '''
 data1 ='''VARIANT a[3, 2] ={{1;2;}{TRUE;TRUE;}{"LOL";"KEK";}}
-a [5] = "HEHE"
-VARIANT b
-b [8] = a[2]
+a [a[0,0]] = - 1000
 '''
 a = Interpreter()
 a.interpreter(data1)
