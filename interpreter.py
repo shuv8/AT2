@@ -546,8 +546,64 @@ class Interpreter:
         return value
 
     def bin_plus(self, _expression1, _expression2):
-        pass
-        # TODO: binary plus
+        value1 = self.interpreter_node(_expression1)
+        value2 = self.interpreter_node(_expression2)
+        if type(value1) == int and type(value2) == int:
+            value = value1 + value2
+        elif type(value1) == bool and type(value2) == bool:
+            if value1 or value2:
+                value = True
+            else:
+                value = False
+        elif type(value1) == str and type(value2) == str:
+            value = value1 + value2
+        elif type(value1) == list and len(value1) == 1:
+            value1 = value1[0]
+        if type(value1) == dict:
+            if type(value2) == int:
+                value1 = value1['int']
+                value = value1 + value2
+            elif type(value2) == bool:
+                value1 = value1['bool']
+                if value1 or value2:
+                    value = True
+                else:
+                    value = False
+            elif type(value2) == str:
+                value1 = value1['string']
+                value = value1 + value2
+        if type(value2) == list and len(value2) == 1:
+            value2 = value2[0]
+        if type(value2) == dict:
+            if type(value1) == int:
+                value2 = value2['int']
+                value = value1 + value2
+            elif type(value1) == bool:
+                value2 = value2['bool']
+                if value1 or value2:
+                    value = True
+                else:
+                    value = False
+            elif type(value1) == str:
+                value2 = value2['string']
+                value = value1 + value2
+        # elif type(value1) == list:
+        #     for elem in value:
+        #         if isinstance(elem, list):
+        #             for elem1 in elem:
+        #                 elem1['int'] = -elem1['int']
+        #                 if elem1['bool']:
+        #                     elem1['bool'] = False
+        #                 else:
+        #                     elem1['bool'] = True
+        #         else:
+        #             elem['int'] = -elem['int']
+        #             if elem['bool']:
+        #                 elem['bool'] = False
+        #             else:
+        #                 elem['bool'] = True
+        # TODO: addition for variants with different sizes or const + variant
+        return value
 
 
 data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
@@ -555,7 +611,7 @@ VARIANT b [1, 5]
 b [2] = TRUE
 '''
 data1 ='''VARIANT a[3, 2] ={{1;2;}{TRUE;TRUE;}{"LOL";"KEK";}}
-a [a[0,0]] = - 1000
+a [0,0] = "Odin " + "dva."
 '''
 a = Interpreter()
 a.interpreter(data1)
