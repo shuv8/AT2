@@ -33,6 +33,10 @@ class Error_Handler:
                     sys.stderr.write(f'Variant "{node.children[0].value}" has wrong indexation at line {self.node.lineno}\n')
                 else:
                     sys.stderr.write(f'Variant "{node.children.value}" has wrong indexation at line {self.node.lineno}\n')
+            elif self.node.type == 'assignment':
+                sys.stderr.write(f'Left-side variant element size doesn\'t match right-side variant at line {self.node.lineno}\n')
+            elif node.type == 'variant':
+                    sys.stderr.write(f'Variant "{node.value}" has wrong indexation at line {self.node.lineno}\n')
         elif self.type == 4:
             if node.type == 'declaration':
                 if isinstance(node.children, list):
@@ -50,6 +54,10 @@ class InterpreterParametrError(Exception):
 
 
 class InterpreterRedeclarationError(Exception):
+    pass
+
+
+class InterpreterUndeclaredError(Exception):
     pass
 
 
