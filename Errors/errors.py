@@ -9,10 +9,11 @@ class Error_Handler:
                       'RedeclarationError',
                       'UndeclaredError',
                       'IndexError',
-                      'InitSizeError'
+                      'InitSizeError',
                       'ConvertationError',
                       'ParametrError',
-                      'SumSizeError']
+                      'SumSizeError',
+                      'IndexNumError']
 
     def call(self, error_type, node=None):
         self.type = error_type
@@ -48,6 +49,8 @@ class Error_Handler:
                     sys.stderr.write(f'Variant "{node.children.value.value}" at line {self.node.lineno} size doesn\'t match initializator size\n')
         elif self.type == 7:
             sys.stderr.write(f'Variants sizes doesn\'t match at line {self.node.lineno} \n')
+        elif self.type == 8:
+            sys.stderr.write(f'Amount of indexes doesn\'t match variant size at line {self.node.lineno}\n')
 
 
 class InterpreterConvertationError(Exception):
@@ -75,4 +78,8 @@ class InterpreterInitSizeError(Exception):
 
 
 class InterpreterSumSizeError(Exception):
+    pass
+
+
+class InterpreterIndexNumError(Exception):
     pass
