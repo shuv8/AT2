@@ -212,14 +212,26 @@ class Interpreter:
             return res
         elif node.type == 'decimal_expression':
             buf = self.interpreter_node(node.children)
-            if isinstance(buf, list):
+            if isinstance(buf, list) and isinstance(buf[0], dict) and len(buf) == 1:
                 return buf[0]['int']
             elif isinstance(buf, dict):
                 return buf['int']
             elif type(buf) == int:
                 return buf
+            else:
+                self.error.call(self.error_types['IndexError'], node)
+                return 0
         elif node.type == 'bool_expression':
-            return self.interpreter_node(node.children)
+            buf = self.interpreter_node(node.children)
+            if isinstance(buf, list) and isinstance(buf[0], dict) and len(buf) == 1:
+                return buf[0]['bool']
+            elif isinstance(buf, dict):
+                return buf['bool']
+            elif type(buf) == bool:
+                return buf
+            else:
+                self.error.call(self.error_types['IndexError'], node)
+                return False
         elif node.type == 'string_expression':
             return self.interpreter_node(node.children)
         elif node.type == 'assignment':
@@ -305,6 +317,9 @@ class Interpreter:
                         self.error.call(self.error_types['IndexNumError'], node)
                     except InterpreterConvertationError:
                         self.error.call(self.error_types['ConvertationError'], node)
+        elif node.type == 'while':
+            while self.interpreter_node(node.children['condition']):
+                self.interpreter_node(node.children['body'])
 
 
 
@@ -703,9 +718,13 @@ data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
 VARIANT b [1, 5]
 b [2] = TRUE
 '''
-data1 ='''VARIANT b [3,2]
-b = "odin dva"
-CONVERT STRING TO DIGIT b
+data1 ='''VARIANT a [3, 3]
+a = TRUE
+a[2,2] = FALSE
+VARIANT b
+WHILE a[b[], b[]]
+b[] = b[] + 1
+ENDW
 '''
 a = Interpreter()
 a.interpreter(data1)
