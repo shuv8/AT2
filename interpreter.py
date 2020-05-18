@@ -317,8 +317,51 @@ class Interpreter:
                         self.error.call(self.error_types['IndexNumError'], node)
                     except InterpreterConvertationError:
                         self.error.call(self.error_types['ConvertationError'], node)
+        elif node.type == 'digitize':
+            variant = node.children
+            er = 0
+            if variant.value not in self.symbol_table[self.scope].keys():
+                self.error.call(self.error_types['UndeclaredError'], node)
+                er = 1
+            else:
+                if node.children.children is not None and node.children.children.type != 'empty_varsize':
+                    _index = node.children.children.children
+                    index = []
+                    if isinstance(_index, list):
+                        index.append(self.interpreter_node(_index[0]))
+                        index.append(self.interpreter_node(_index[1]))
+                        if index[0] < 0 or index[1] < 0:
+                            self.error.call(self.error_types['IndexError'], node.children)
+                            er = 1
+                    else:
+                        index.append(self.interpreter_node(_index))
+                        if index[0] < 0:
+                            self.error.call(self.error_types['IndexError'], node.children)
+                            er = 1
+                elif node.children.children is not None and node.children.children.type == 'empty_varsize':
+                    if isinstance(self.symbol_table[self.scope][variant.value][0], list):
+                        index = [0, 0]
+                    else:
+                        index = [0]
+                else:
+                    index = None
+                type1 = node.value
+                if er == 0:
+                    try:
+                        self.convert(node.children, index, type1, type2='int')
+                    except InterpreterUndeclaredError:
+                        self.error.call(self.error_types['UndeclaredError'], node)
+                    except InterpreterIndexError:
+                        self.error.call(self.error_types['IndexError'], node)
+                    except InterpreterIndexNumError:
+                        self.error.call(self.error_types['IndexNumError'], node)
+                    except InterpreterConvertationError:
+                        self.error.call(self.error_types['ConvertationError'], node)
         elif node.type == 'while':
             while self.interpreter_node(node.children['condition']):
+                self.interpreter_node(node.children['body'])
+        elif node.type == 'until':
+            while not self.interpreter_node(node.children['condition']):
                 self.interpreter_node(node.children['body'])
 
 
@@ -693,6 +736,8 @@ class Interpreter:
             raise InterpreterIndexError
         except InterpreterIndexNumError:
             raise InterpreterIndexNumError
+        if isinstance(val, list) and len(val) == 1 and isinstance(val[0], dict):
+            val = val[0]
         if isinstance(val, dict):
             try:
                 res = self.converter.convert(val[type1], type2)
@@ -719,12 +764,8 @@ VARIANT b [1, 5]
 b [2] = TRUE
 '''
 data1 ='''VARIANT a [3, 3]
-a = TRUE
-a[2,2] = FALSE
-VARIANT b
-WHILE a[b[], b[]]
-b[] = b[] + 1
-ENDW
+a[2,2] = TRUE
+DIGITIZE BOOL a[2,2]
 '''
 a = Interpreter()
 a.interpreter(data1)
