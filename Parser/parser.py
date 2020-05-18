@@ -246,8 +246,8 @@ class Parser(object):
         p[0] = TreeNode('convert', value=[p[2], p[4]], children=p[5], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_digitize(self, p):
-        """digitize : DIGITIZE variant"""
-        p[0] = TreeNode('digitize', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        """digitize : DIGITIZE type variant"""
+        p[0] = TreeNode('digitize', value=p[2], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_type(self, p):
         """type : BOOL
