@@ -247,7 +247,7 @@ class Parser(object):
 
     def p_digitize(self, p):
         """digitize : DIGITIZE type variant"""
-        p[0] = TreeNode('digitize', value=p[2], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+        p[0] = TreeNode('digitize', value=p[2], children=p[3], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_type(self, p):
         """type : BOOL

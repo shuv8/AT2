@@ -4,9 +4,7 @@
     <list default="true" id="522d7431-aa16-4c35-ba74-ea0ad5f2cb64" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Errors/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/errors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parser.out" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Parser/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parsetab.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parsetab.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/interpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/interpreter.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -372,7 +370,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589798902092</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Parser 0.4.4&#10;-Digitize rule updated">
+      <created>1589804397023</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1589804397023</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -389,7 +394,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Parser 0.2&#10;-Some syntax errors handling added&#10;-Some more rules added" />
     <MESSAGE value="Parser 0.3&#10;-More syntax errors handling added&#10;-More rules added&#10;-Functions rule added" />
     <MESSAGE value="Parser 0.4&#10;-Handling of almost all syntax errors handling added&#10;-All grammar rules added" />
     <MESSAGE value="Parser 0.4.1&#10;-Manual debug commented" />
@@ -414,54 +418,55 @@
     <MESSAGE value="Interpreter 0.3.6&#10;-Convertation added" />
     <MESSAGE value="Interpreter 0.3.7&#10;-&quot;While&quot; added" />
     <MESSAGE value="Error Handler 0.1.6&#10;-Some errors fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Error Handler 0.1.6&#10;-Some errors fixed" />
+    <MESSAGE value="Parser 0.4.4&#10;-Digitize rule updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parser 0.4.4&#10;-Digitize rule updated" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="422" y="158" key="CommitChangelistDialog2" timestamp="1589798901196">
+    <state x="422" y="158" key="CommitChangelistDialog2" timestamp="1589804396233">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="583" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1589115218590" />
-    <state x="422" y="158" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589798901196" />
+    <state x="422" y="158" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589804396233" />
     <state x="1220" y="278" key="FileChooserDialogImpl" timestamp="1588863189923">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1220" y="278" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588863189923" />
-    <state width="1899" height="302" key="GridCell.Tab.0.bottom" timestamp="1589804343982">
+    <state width="1899" height="302" key="GridCell.Tab.0.bottom" timestamp="1589804747301">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1589115047538" />
-    <state width="1899" height="302" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589804343982" />
-    <state width="1899" height="302" key="GridCell.Tab.0.center" timestamp="1589804343982">
+    <state width="1899" height="302" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589804747301" />
+    <state width="1899" height="302" key="GridCell.Tab.0.center" timestamp="1589804747301">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1589115047537" />
-    <state width="1899" height="302" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589804343982" />
-    <state width="1899" height="302" key="GridCell.Tab.0.left" timestamp="1589804343982">
+    <state width="1899" height="302" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589804747301" />
+    <state width="1899" height="302" key="GridCell.Tab.0.left" timestamp="1589804747301">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1589115047537" />
-    <state width="1899" height="302" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589804343982" />
-    <state width="1899" height="302" key="GridCell.Tab.0.right" timestamp="1589804343982">
+    <state width="1899" height="302" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589804747301" />
+    <state width="1899" height="302" key="GridCell.Tab.0.right" timestamp="1589804747301">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1589115047538" />
-    <state width="1899" height="302" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589804343982" />
-    <state width="1899" height="302" key="GridCell.Tab.1.bottom" timestamp="1589804345046">
+    <state width="1899" height="302" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589804747301" />
+    <state width="1899" height="302" key="GridCell.Tab.1.bottom" timestamp="1589804748158">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="302" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589804345046" />
-    <state width="1899" height="302" key="GridCell.Tab.1.center" timestamp="1589804345046">
+    <state width="1899" height="302" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589804748158" />
+    <state width="1899" height="302" key="GridCell.Tab.1.center" timestamp="1589804748158">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="302" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589804345046" />
-    <state width="1899" height="302" key="GridCell.Tab.1.left" timestamp="1589804345046">
+    <state width="1899" height="302" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589804748158" />
+    <state width="1899" height="302" key="GridCell.Tab.1.left" timestamp="1589804748158">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="302" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589804345046" />
-    <state width="1899" height="302" key="GridCell.Tab.1.right" timestamp="1589804345046">
+    <state width="1899" height="302" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589804748158" />
+    <state width="1899" height="302" key="GridCell.Tab.1.right" timestamp="1589804748158">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="302" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589804345046" />
+    <state width="1899" height="302" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589804748158" />
     <state x="754" y="242" key="RollbackChangesDialog" timestamp="1589726349072">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -470,11 +475,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="162" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1587971099414" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1589798903402">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1589804398467">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1589115224437" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589798903402" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589804398467" />
     <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1589463297075">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -497,7 +502,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/interpreter.py</url>
-          <line>773</line>
+          <line>771</line>
           <option name="timeStamp" value="49" />
         </line-breakpoint>
       </breakpoints>
