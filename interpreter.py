@@ -160,21 +160,30 @@ class Interpreter:
         elif node.type == 'expression':
             return self.interpreter_node(node.children)
         elif node.type == 'variant':
-            if node.children is not None:
-                index = node.children.children
-                _index = []
-                if isinstance(index, list):
-                    _index.append(self.interpreter_node(index[0]))
-                    _index.append(self.interpreter_node(index[1]))
-                else:
-                    _index.append(self.interpreter_node(index))
-            else:
-                _index = None
-            try:
-                buf = self.get_variant_value(node, index=_index)
-            except InterpreterIndexNumError:
-                self.error.call(self.error_types['IndexNumError'], node)
+            if node.value not in self.symbol_table[self.scope].keys():
+                self.error.call(self.error_types['UndeclaredError'], node)
                 buf = 0
+            else:
+                if node.children is not None and node.children.type != 'empty_varsize':
+                    index = node.children.children
+                    _index = []
+                    if isinstance(index, list):
+                        _index.append(self.interpreter_node(index[0]))
+                        _index.append(self.interpreter_node(index[1]))
+                    else:
+                        _index.append(self.interpreter_node(index))
+                elif node.children is not None and node.children.type == 'empty_varsize':
+                    if isinstance(self.symbol_table[self.scope][node.value][0], list):
+                        _index = [0, 0]
+                    else:
+                        _index = [0]
+                else:
+                    _index = None
+                try:
+                    buf = self.get_variant_value(node, index=_index)
+                except InterpreterIndexNumError:
+                    self.error.call(self.error_types['IndexNumError'], node)
+                    buf = 0
             return buf
 
         elif node.type == 'const_expressions':
@@ -255,6 +264,49 @@ class Interpreter:
                         self.error.call(self.error_types['IndexError'], node)
                     except InterpreterIndexNumError:
                         self.error.call(self.error_types['IndexNumError'], node)
+        elif node.type == 'convert':
+            variant = node.children
+            er = 0
+            if variant.value not in self.symbol_table[self.scope].keys():
+                self.error.call(self.error_types['UndeclaredError'], node)
+                er = 1
+            else:
+                if node.children.children is not None and node.children.children.type != 'empty_varsize':
+                    _index = node.children.children.children
+                    index = []
+                    if isinstance(_index, list):
+                        index.append(self.interpreter_node(_index[0]))
+                        index.append(self.interpreter_node(_index[1]))
+                        if index[0] < 0 or index[1] < 0:
+                            self.error.call(self.error_types['IndexError'], node.children)
+                            er = 1
+                    else:
+                        index.append(self.interpreter_node(_index))
+                        if index[0] < 0:
+                            self.error.call(self.error_types['IndexError'], node.children)
+                            er = 1
+                elif node.children.children is not None and node.children.children.type == 'empty_varsize':
+                    if isinstance(self.symbol_table[self.scope][variant.value][0], list):
+                        index = [0, 0]
+                    else:
+                        index = [0]
+                else:
+                    index = None
+                type1 = node.value[0]
+                type2 = node.value[1]
+                if er == 0:
+                    try:
+                        self.convert(node.children, index, type1, type2)
+                    except InterpreterUndeclaredError:
+                        self.error.call(self.error_types['UndeclaredError'], node)
+                    except InterpreterIndexError:
+                        self.error.call(self.error_types['IndexError'], node)
+                    except InterpreterIndexNumError:
+                        self.error.call(self.error_types['IndexNumError'], node)
+                    except InterpreterConvertationError:
+                        self.error.call(self.error_types['ConvertationError'], node)
+
+
 
 
 
@@ -404,17 +456,16 @@ class Interpreter:
             raise InterpreterUndeclaredError
         else:
             if index is not None:
-                if index[0] > 1 and type(self.symbol_table[self.scope][variant.value][0]) == list and len(
-                        self.symbol_table[self.scope][variant.value]) - 1 < index[0]:
+                if index[0] > 0 and len(self.symbol_table[self.scope][variant.value]) - 1 < index[0]:
                     raise InterpreterIndexError
-                elif index[0] > 1 and len(index) == 2 and index[1] > 0 and type(self.symbol_table[self.scope][variant.value][0]) == dict:
+                elif index[0] > 0 and len(index) == 2 and index[1] > 0 and type(self.symbol_table[self.scope][variant.value][0]) == dict:
                     raise InterpreterIndexNumError
                 if len(index) == 1:
                     if type(self.symbol_table[self.scope][variant.value][index[0]]) == list:
                         raise InterpreterIndexNumError
                     return copy.deepcopy(self.symbol_table[self.scope][variant.value][index[0]])
                 else:
-                    if len(self.symbol_table[self.scope][variant.value][index[0]]) < index[1]:
+                    if len(self.symbol_table[self.scope][variant.value][index[0]]) <= index[1]:
                         raise InterpreterIndexError
                     else:
                         return copy.deepcopy([self.symbol_table[self.scope][variant.value][index[0]][index[1]]])
@@ -501,9 +552,6 @@ class Interpreter:
                     elif type(i) == str:
                         init[0]['string'] = i
                 return init
-
-
-
 
     def unar_minus(self, _expression):
         value = self.interpreter_node(_expression)
@@ -609,17 +657,55 @@ class Interpreter:
                         elem['string'] += value2
             return value1
 
+    def convert(self, variant, index, type1, type2):
+        if type1 == 'DIGIT':
+            type1 = 'int'
+        elif type1 == 'BOOL':
+            type1 = 'bool'
+        elif type1 == 'STRING':
+            type1 = 'string'
+        if type2 == 'DIGIT':
+            type2 = 'int'
+        elif type2 == 'BOOL':
+            type2 = 'bool'
+        elif type2 == 'STRING':
+            type2 = 'string'
+        try:
+            val = self.get_variant_value(variant, index)
+        except InterpreterUndeclaredError:
+            raise InterpreterUndeclaredError
+        except InterpreterIndexError:
+            raise InterpreterIndexError
+        except InterpreterIndexNumError:
+            raise InterpreterIndexNumError
+        if isinstance(val, dict):
+            try:
+                res = self.converter.convert(val[type1], type2)
+            except InterpreterConvertationError:
+                raise InterpreterConvertationError
+            if index is not None and len(index) == 1:
+                self.symbol_table[self.scope][variant.value][index[0]][type2] = res
+            elif index is not None:
+                self.symbol_table[self.scope][variant.value][index[0]][index[1]][type2] = res
+        elif isinstance(val, list):
+            for i in range(len(val)):
+                if isinstance(val[i], list):
+                    for j in range(len(val[i])):
+                        try:
+                            res = self.converter.convert(val[i][j][type1], type2)
+                        except InterpreterConvertationError:
+                            raise InterpreterConvertationError
+                        self.symbol_table[self.scope][variant.value][i][j][type2] = res
+
+
 
 data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
 VARIANT b [1, 5]
 b [2] = TRUE
 '''
 data1 ='''VARIANT b [3,2]
-VARIANT a [3,2]
-a = 123
-b = 100
-VARIANT c
-c = a + b
+b = "odin dva"
+CONVERT STRING TO DIGIT b
 '''
 a = Interpreter()
 a.interpreter(data1)

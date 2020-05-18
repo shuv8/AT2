@@ -40,15 +40,19 @@ class Error_Handler:
             elif node.type == 'expression':
                 sys.stderr.write(f'Wrong indexation of right-side variant at line {self.node.lineno}\n')
             elif node.type == 'variant':
-                    sys.stderr.write(f'Variant "{node.value}" has wrong indexation at line {self.node.lineno}\n')
+                sys.stderr.write(f'Variant "{node.value}" has wrong indexation at line {self.node.lineno}\n')
+            elif node.type == 'convert':
+                sys.stderr.write(f'Variant "{node.children.value}" has wrong indexation at line {self.node.lineno}\n')
         elif self.type == 4:
             if node.type == 'declaration':
                 if isinstance(node.children, list):
                     sys.stderr.write(f'Variant "{node.children[0].value.value}" at line {self.node.lineno} size doesn\'t match initializator size\n')
                 else:
                     sys.stderr.write(f'Variant "{node.children.value.value}" at line {self.node.lineno} size doesn\'t match initializator size\n')
+        elif self.type == 5:
+            sys.stderr.write(f'Can\'t find necessary part of the variant "{node.children.value}" for convertation at line {self.node.lineno}\n')
         elif self.type == 7:
-            sys.stderr.write(f'Variants sizes doesn\'t match at line {self.node.lineno} \n')
+            sys.stderr.write(f'Variants sizes doesn\'t match at line {self.node.lineno}\n')
         elif self.type == 8:
             sys.stderr.write(f'Amount of indexes doesn\'t match variant size at line {self.node.lineno}\n')
 
