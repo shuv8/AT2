@@ -78,9 +78,12 @@ class Parser(object):
 
     def p_varsize(self, p):
         """varsize : LSQBRACKET decimal_expression RSQBRACKET
-                    | LSQBRACKET decimal_expression COMMA decimal_expression RSQBRACKET"""
+                    | LSQBRACKET decimal_expression COMMA decimal_expression RSQBRACKET
+                    | LSQBRACKET RSQBRACKET"""
         if len(p) == 4:
             p[0] = TreeNode('varsize', children=p[2], lineno=p.lineno(2), lexpos=p.lexpos(2))
+        elif len(p) == 3:
+            p[0] = TreeNode('empty_varsize', lineno=p.lineno(1), lexpos=p.lexpos(1))
         else:
             p[0] = TreeNode('varsize', children=[p[2], p[4]], lineno=p.lineno(2), lexpos=p.lexpos(2))
 
