@@ -185,7 +185,6 @@ class Interpreter:
                     self.error.call(self.error_types['IndexNumError'], node)
                     buf = 0
             return buf
-
         elif node.type == 'const_expressions':
             buf = []
             if isinstance(self.interpreter_node(node.children[0]), list):
@@ -411,6 +410,7 @@ class Interpreter:
                 second_size = self.interpreter_node(size[1])
             else:
                 first_size = self.interpreter_node(size)
+                second_size = 0
             if first_size < 1 or second_size < 0:
                 raise InterpreterIndexError
         elif variant.type == 'init':
@@ -483,6 +483,8 @@ class Interpreter:
         else:
             if isinstance(expression, list):
                 self.symbol_table[self.scope][variant] = expression
+            elif isinstance(expression, dict):
+                self.symbol_table[self.scope][variant] = [expression]
             else:
                 if type(expression) == int:
                     expr_type = 'int'
@@ -574,12 +576,12 @@ class Interpreter:
         if initialization.type == 'init_lists':
             init = []
             first = self.makeinitializator(initialization.children[0])
-            if type(first[0]) == list or len(first) == 1:
+            last = self.makeinitializator(initialization.children[1])
+            if type(first[0]) == list or len(first) == 1 or len(last) == 1:
                 for first_init in first:
                     init.append(first_init)
             else:
                 init.append(first)
-            last = self.makeinitializator(initialization.children[1])
             if len(last) == 1:
                 init.append(last[0])
             else:
@@ -780,14 +782,40 @@ data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
 VARIANT b [1, 5]
 b [2] = TRUE
 '''
-data1 ='''VARIANT a
-VARIANT b
-VARIANT c
-a = 1
-b = 2
-IFNHIGH a, --100
-c = 228
+data1 ='''
+VARIANT n
+n = 5
+VARIANT a [n[]] = {{8;}{2;}{3;}{-3;}{15;}}
+VARIANT min
+VARIANT i
+VARIANT j
+i = 0
+j = i
+VARIANT buf
+VARIANT buf1
+buf1 = TRUE
+WHILE buf1
+min = a[j[]]
+buf1 = TRUE
+WHILE buf1
+IFLESS a[i[]], min[]
+buf = min
+min = a[i[]]
+a[i[]] = buf
 ENDIF
+i = i + 1
+IFZERO i+ -n
+buf1 = FALSE
+ENDIF
+ENDW
+buf1 = TRUE
+a[j[]] = min
+j = j + 1
+i = j
+IFZERO j+ -n
+buf1 = FALSE
+ENDIF
+ENDW
 '''
 a = Interpreter()
 a.interpreter(data1)
