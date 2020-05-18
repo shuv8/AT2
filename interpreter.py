@@ -193,8 +193,10 @@ class Interpreter:
         elif node.type == 'unar_op':
             return self.unar_minus(node.children)
         elif node.type == 'bin_op':
+            value1 = self.interpreter_node(node.children[0])
+            value2 = self.interpreter_node(node.children[1])
             try:
-                res = self.bin_plus(node.children[0], node.children[1])
+                res = self.bin_plus(value1, value2)
             except InterpreterSumSizeError:
                 self.error.call(self.error_types['SumSizeError'], node)
                 res = 0
@@ -225,7 +227,7 @@ class Interpreter:
                 except InterpreterIndexError:
                     self.error.call(self.error_types['IndexError'], node.children.children)
                     er = 1
-                if node.value.children is not None:
+                if node.value.children is not None and node.value.children.type != 'empty_varsize':
                     _index = node.value.children.children
                     index = []
                     if isinstance(_index, list):
@@ -239,6 +241,11 @@ class Interpreter:
                         if index[0] < 0:
                             self.error.call(self.error_types['IndexError'], node.children)
                             er = 1
+                elif node.value.children is not None and node.value.children.type == 'empty_varsize':
+                    if isinstance(self.symbol_table[self.scope][var_name][0], list):
+                        index = [0,0]
+                    else:
+                        index = [0]
                 else:
                     index = None
                 if er == 0:
@@ -253,6 +260,8 @@ class Interpreter:
 
     def declare_variant(self, variant, init=None):
         if variant.children is not None:
+            if variant.children.type == 'empty_varsize':
+                raise InterpreterIndexError
             size = variant.children.children
             name = variant.value
             if isinstance(size, list):
@@ -264,6 +273,8 @@ class Interpreter:
             if first_size < 1 or second_size < 0:
                 raise InterpreterIndexError
         elif variant.type == 'init' and variant.value.children is not None:
+            if variant.value.children.type == 'empty_varsize':
+                raise InterpreterIndexError
             size = variant.value.children.children
             name = variant.value.value
             if isinstance(size, list):
@@ -530,11 +541,19 @@ class Interpreter:
         return value
 
     def bin_plus(self, _expression1, _expression2):
-        value1 = self.interpreter_node(_expression1)
-        value2 = self.interpreter_node(_expression2)
+        value1 = _expression1
+        value2 = _expression2
         if type(value1) == list and type(value2) == list:
-            if type(value1) == type(value2) and len(value1) != len(value2):
+            if len(value1) != len(value2):
                 raise InterpreterSumSizeError
+            elif type(value1[0]) != type(value2[0]):
+                raise InterpreterSumSizeError
+            else:
+                for i in range(len(value1)):
+                    if type(value1[i]) == dict:
+                        value1[i] = self.bin_plus(value1[i], value2[i])[0]
+                    else:
+                        value1[i] = self.bin_plus(value1[i], value2[i])
         if type(value1) == int and type(value2) == int:
             return value1 + value2
         elif type(value1) == bool and type(value2) == bool:
@@ -568,35 +587,39 @@ class Interpreter:
         if type(value1) == dict and type(value2) == dict:
             value = [{'int':0, 'bool':False, 'string':""}]
             value[0]['int'] = value1['int'] + value2['int']
-            value[0]['int'] = value1['bool'] or value2['bool']
+            value[0]['bool'] = value1['bool'] or value2['bool']
             value[0]['string'] = value1['string'] + value2['string']
             return value
-        # elif type(value1) == list:
-        #     for elem in value:
-        #         if isinstance(elem, list):
-        #             for elem1 in elem:
-        #                 elem1['int'] = -elem1['int']
-        #                 if elem1['bool']:
-        #                     elem1['bool'] = False
-        #                 else:
-        #                     elem1['bool'] = True
-        #         else:
-        #             elem['int'] = -elem['int']
-        #             if elem['bool']:
-        #                 elem['bool'] = False
-        #             else:
-        #                 elem['bool'] = True
-        # TODO: addition for variants with different sizes or const + variant
+        elif type(value1) == list:
+            for elem in value1:
+                if isinstance(elem, list):
+                    for elem1 in elem:
+                        if type(value2) == int:
+                            elem1['int'] += value2
+                        elif type(value2) == bool:
+                            elem1['bool'] = elem1['bool'] or value2
+                        elif type(value2) == str:
+                            elem1['string'] += value2
+                else:
+                    if type(value2) == int:
+                        elem['int'] += value2
+                    elif type(value2) == bool:
+                        elem['bool'] = elem['bool'] or value2
+                    elif type(value2) == str:
+                        elem['string'] += value2
+            return value1
 
 
 data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
 VARIANT b [1, 5]
 b [2] = TRUE
 '''
-data1 ='''VARIANT b [2,2]
-VARIANT a [2,2]
+data1 ='''VARIANT b [3,2]
+VARIANT a [3,2]
 a = 123
-b [1, 0] = a[1, 0] + a[0,1]
+b = 100
+VARIANT c
+c = a + b
 '''
 a = Interpreter()
 a.interpreter(data1)
