@@ -43,6 +43,8 @@ class Error_Handler:
                 sys.stderr.write(f'Variant "{node.value}" has wrong indexation at line {self.node.lineno}\n')
             elif node.type == 'convert':
                 sys.stderr.write(f'Variant "{node.children.value}" has wrong indexation at line {self.node.lineno}\n')
+            elif node.type == 'digitize':
+                sys.stderr.write(f'Variant "{node.children.value}" has wrong indexation at line {self.node.lineno}\n')
             else:
                 sys.stderr.write(f'Wrong indexation\n')
         elif self.type == 4:
