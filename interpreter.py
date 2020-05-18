@@ -363,6 +363,25 @@ class Interpreter:
         elif node.type == 'until':
             while not self.interpreter_node(node.children['condition']):
                 self.interpreter_node(node.children['body'])
+        elif node.type == 'if':
+            if node.children['condition'].value == 'IFZERO':
+                if self.interpreter_node(node.children['conditional_expressions'].children) == 0:
+                    self.interpreter_node(node.children['body'])
+            elif node.children['condition'].value == 'IFNZERO':
+                if self.interpreter_node(node.children['conditional_expressions'].children) != 0:
+                    self.interpreter_node(node.children['body'])
+            elif node.children['condition'].value == 'IFLESS':
+                if self.interpreter_node(node.children['conditional_expressions'].children[0]) < self.interpreter_node(node.children['conditional_expressions'].children[1]):
+                    self.interpreter_node(node.children['body'])
+            elif node.children['condition'].value == 'IFNLESS':
+                if self.interpreter_node(node.children['conditional_expressions'].children[0]) >= self.interpreter_node(node.children['conditional_expressions'].children[1]):
+                    self.interpreter_node(node.children['body'])
+            elif node.children['condition'].value == 'IFHIGH':
+                if self.interpreter_node(node.children['conditional_expressions'].children[0]) > self.interpreter_node(node.children['conditional_expressions'].children[1]):
+                    self.interpreter_node(node.children['body'])
+            elif node.children['condition'].value == 'IFNHIGH':
+                if self.interpreter_node(node.children['conditional_expressions'].children[0]) <= self.interpreter_node(node.children['conditional_expressions'].children[1]):
+                    self.interpreter_node(node.children['body'])
 
 
 
@@ -526,7 +545,7 @@ class Interpreter:
                     if len(self.symbol_table[self.scope][variant.value][index[0]]) <= index[1]:
                         raise InterpreterIndexError
                     else:
-                        return copy.deepcopy([self.symbol_table[self.scope][variant.value][index[0]][index[1]]])
+                        return copy.deepcopy(self.symbol_table[self.scope][variant.value][index[0]][index[1]])
             else:
                 return copy.deepcopy(self.symbol_table[self.scope][variant.value])
 
@@ -736,8 +755,6 @@ class Interpreter:
             raise InterpreterIndexError
         except InterpreterIndexNumError:
             raise InterpreterIndexNumError
-        if isinstance(val, list) and len(val) == 1 and isinstance(val[0], dict):
-            val = val[0]
         if isinstance(val, dict):
             try:
                 res = self.converter.convert(val[type1], type2)
@@ -763,9 +780,14 @@ data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
 VARIANT b [1, 5]
 b [2] = TRUE
 '''
-data1 ='''VARIANT a [3, 3]
-a[2,2] = TRUE
-DIGITIZE BOOL a[2,2]
+data1 ='''VARIANT a
+VARIANT b
+VARIANT c
+a = 1
+b = 2
+IFNHIGH a, --100
+c = 228
+ENDIF
 '''
 a = Interpreter()
 a.interpreter(data1)
