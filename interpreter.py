@@ -106,7 +106,8 @@ class Interpreter:
                             'ConvertationError': 5,
                             'ParametrError': 6,
                             'SumSizeError': 7,
-                            'IndexNumError': 8}
+                            'IndexNumError': 8,
+                            'ReturnRepeatError': 9}
 
     def interpreter(self, program=None):
         self.program = program
@@ -133,10 +134,10 @@ class Interpreter:
         elif node.type == 'program':
             self.interpreter_node(node.children)
         # program -> statements
-        elif node.type == 'statements':
+        elif node.type == 'statements' or node.type == 'func_body_statements':
             for child in node.children:
                 self.interpreter_node(child)
-        elif node.type == 'statement':
+        elif node.type == 'statement' or node.type == 'func_body_statement':
             self.interpreter_node(node.children)
         elif node.type == 'declaration':
             declaration_child = node.children
@@ -161,6 +162,35 @@ class Interpreter:
             return self.interpreter_node(node.children)
         elif node.type == 'variant':
             if node.value not in self.symbol_table[self.scope].keys():
+                self.error.call(self.error_types['UndeclaredError'], node)
+                buf = 0
+            else:
+                if node.children is not None and node.children.type != 'empty_varsize':
+                    index = node.children.children
+                    _index = []
+                    if isinstance(index, list):
+                        _index.append(self.interpreter_node(index[0]))
+                        _index.append(self.interpreter_node(index[1]))
+                    else:
+                        _index.append(self.interpreter_node(index))
+                elif node.children is not None and node.children.type == 'empty_varsize':
+                    if isinstance(self.symbol_table[self.scope][node.value][0], list):
+                        _index = [0, 0]
+                    else:
+                        _index = [0]
+                else:
+                    _index = None
+                try:
+                    buf = self.get_variant_value(node, index=_index)
+                except InterpreterIndexNumError:
+                    self.error.call(self.error_types['IndexNumError'], node)
+                    buf = 0
+            return buf
+        elif node.type == 'func_param':
+            if self.scope == 0:
+                self.error.call(self.error_types['ParametrError'], node)
+                buf = 0
+            elif node.value not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
                 buf = 0
             else:
@@ -381,6 +411,36 @@ class Interpreter:
             elif node.children['condition'].value == 'IFNHIGH':
                 if self.interpreter_node(node.children['conditional_expressions'].children[0]) <= self.interpreter_node(node.children['conditional_expressions'].children[1]):
                     self.interpreter_node(node.children['body'])
+        elif node.type == 'func_descriptor':
+            pass
+        elif node.type == 'function_call':
+            if node.children is not None:
+                try:
+                    param = self.interpreter_node(node.children)
+                except InterpreterParametrError:
+                    param = None
+
+                if type(param) == int:
+                    param = [{'int': param, 'bool': False, 'string': ''}]
+                elif type(param) == bool:
+                    param = [{'int': 0, 'bool': param, 'string': ''}]
+                elif type(param) == str:
+                    param = [{'int': 0, 'bool': False, 'string': param}]
+                elif type(param) == dict:
+                    param = [param]
+            else:
+                param = None
+            try:
+                res = self.func_call(node.value['name'], param)
+            except InterpreterParametrError:
+                pass
+            return res
+        elif node.type == 'return':
+            if '#RETURN' in self.symbol_table[self.scope].keys():
+                self.error.call(self.error_types['ReturnRepeatError'], node)
+            else:
+                self.symbol_table[self.scope]['#RETURN'] = self.interpreter_node(node.children)
+
 
 
 
@@ -531,7 +591,9 @@ class Interpreter:
                         element.append(el)
 
     def get_variant_value(self, variant, index = None):
-        if variant.value not in self.symbol_table[self.scope].keys():
+        if variant.type == 'func_param' and self.scope == 0:
+            raise InterpreterParametrError
+        elif variant.value not in self.symbol_table[self.scope].keys():
             raise InterpreterUndeclaredError
         else:
             if index is not None:
@@ -546,6 +608,8 @@ class Interpreter:
                 else:
                     if len(self.symbol_table[self.scope][variant.value][index[0]]) <= index[1]:
                         raise InterpreterIndexError
+                    elif type(self.symbol_table[self.scope][variant.value][index[0]]) == dict:
+                        raise InterpreterIndexNumError
                     else:
                         return copy.deepcopy(self.symbol_table[self.scope][variant.value][index[0]][index[1]])
             else:
@@ -696,6 +760,7 @@ class Interpreter:
                         value1[i] = self.bin_plus(value1[i], value2[i])[0]
                     else:
                         value1[i] = self.bin_plus(value1[i], value2[i])
+                return value1
         if type(value1) == int and type(value2) == int:
             return value1 + value2
         elif type(value1) == bool and type(value2) == bool:
@@ -772,6 +837,8 @@ class Interpreter:
             raise InterpreterIndexError
         except InterpreterIndexNumError:
             raise InterpreterIndexNumError
+        except InterpreterParametrError:
+            raise InterpreterParametrError
         if isinstance(val, dict):
             try:
                 res = self.converter.convert(val[type1], type2)
@@ -791,15 +858,51 @@ class Interpreter:
                             raise InterpreterConvertationError
                         self.symbol_table[self.scope][variant.value][i][j][type2] = res
 
+    def func_call(self, name, parametr=None):
+        if name not in self.functions.keys():
+            raise InterpreterUndeclaredError
+        self.scope += 1
+        self.symbol_table.append(dict())
+        if parametr is not None:
+            self.symbol_table[self.scope]['PARAM'] = parametr
+        self.interpreter_node(self.functions[name].children['body'])
+        if '#RETURN' in self.symbol_table[self.scope].keys():
+            result = copy.deepcopy(self.symbol_table[self.scope]['#RETURN'])
+        else:
+            result = None
+        self.symbol_table.pop()
+        self.scope -= 1
+        return result
 
 
-data = '''VARIANT a [3, 2] = {{"DOWN";12;}{"LOOKDOWN UP"; 1;}{TRUE; "pop 1234 down DOWN LEFT LOOKRIGHT";}}
-a = -a
+
+data = '''FUNC test
+VARIANT a
+a = "A B C"
+VARIANT c[2,0]
+c[0] = a[]
+c[1] = PARAM[]
+c = CALL sum c
+RETURN c
+ENDFUNC
+
+FUNC sum
+RETURN PARAM[0] + PARAM[1]
+ENDFUNC
+
+VARIANT a
+a = CALL test " D E F"
 '''
 data1 ='''
+FUNC sort
 VARIANT n
-n = 5
-VARIANT a [n] = {{8;}{150 + 2;}{3;}{-3;}{15;}}
+n = PARAM [0,0]
+VARIANT a [n]
+a[0] = PARAM[1,0]
+a[1] = PARAM[1,1]
+a[2] = PARAM[1,2]
+a[3] = PARAM[1,3]
+a[4] = PARAM[1,4]
 VARIANT min
 VARIANT i
 VARIANT j
@@ -808,9 +911,15 @@ j = i
 VARIANT buf
 VARIANT buf1
 buf1 = TRUE
+IFZERO j+ -n
+buf1 = FALSE
+ENDIF
 WHILE buf1
 min = a[j]
 buf1 = TRUE
+IFZERO i+ -n
+buf1 = FALSE
+ENDIF
 WHILE buf1
 IFLESS a[i], min
 buf = min
@@ -830,6 +939,18 @@ IFZERO j+ -n
 buf1 = FALSE
 ENDIF
 ENDW
+RETURN a
+ENDFUNC
+
+
+VARIANT a [2,5]
+a[0,0] = 5
+a[1,0] = 123
+a[1,1]=2
+a[1,2]= -12
+a[1,3] = 90
+a[1,4] = 123
+a = CALL sort a
 '''
 a = Interpreter()
 a.interpreter(data)
