@@ -144,7 +144,8 @@ class Parser(object):
         """expression : math_expression
                         | const
                         | variant
-                        | function_call"""
+                        | function_call
+                        | command"""
         p[0] = TreeNode('expression', children=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_decimal_expression(self, p):
