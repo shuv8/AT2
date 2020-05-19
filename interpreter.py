@@ -435,7 +435,11 @@ class Interpreter:
             try:
                 res = self.func_call(node.value['name'], param)
             except InterpreterParametrError:
-                pass
+                self.error.call(self.error_types['ParametrError'], node)
+                res = 0
+            except InterpreterRecursionError:
+                self.error.call(self.error_types['RecursionError'], node)
+                res = 0
             return res
         elif node.type == 'return':
             if '#RETURN' in self.symbol_table[self.scope].keys():
@@ -864,6 +868,9 @@ class Interpreter:
         if name not in self.functions.keys():
             raise InterpreterUndeclaredError
         self.scope += 1
+        if self.scope > 100:
+            self.scope -= 1
+            raise InterpreterRecursionError
         self.symbol_table.append(dict())
         if parametr is not None:
             self.symbol_table[self.scope]['PARAM'] = parametr
