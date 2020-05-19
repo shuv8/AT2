@@ -12,6 +12,7 @@ from Errors.errors import InterpreterInitSizeError
 from Errors.errors import InterpreterUndeclaredError
 from Errors.errors import InterpreterSumSizeError
 from Errors.errors import InterpreterIndexNumError
+from Errors.errors import InterpreterRecursionError
 
 class Variant:
     def __init__(self, first_size=1, second_size=0):
@@ -107,7 +108,8 @@ class Interpreter:
                             'ParametrError': 6,
                             'SumSizeError': 7,
                             'IndexNumError': 8,
-                            'ReturnRepeatError': 9}
+                            'ReturnRepeatError': 9,
+                            'RecursionError': 10}
 
     def interpreter(self, program=None):
         self.program = program
@@ -882,7 +884,7 @@ a = "A B C"
 VARIANT c[2,0]
 c[0] = a[]
 c[1] = PARAM[]
-c = CALL sum c
+c = CALL test CALL sum c
 RETURN c
 ENDFUNC
 
