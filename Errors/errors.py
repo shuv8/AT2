@@ -13,7 +13,9 @@ class Error_Handler:
                       'ConvertationError',
                       'ParametrError',
                       'SumSizeError',
-                      'IndexNumError']
+                      'IndexNumError',
+                      'ReturnRepeatError',
+                      'RecursionError']
 
     def call(self, error_type, node=None):
         self.type = error_type
@@ -29,6 +31,8 @@ class Error_Handler:
         elif self.type == 2:
             if self.node.type == 'assignment':
                 sys.stderr.write(f'Variant {self.node.value.value} at line {self.node.lineno} is used before declaration\n')
+            else:
+                sys.stderr.write(f'Something at line {self.node.lineno} is used before declaration\n')
         elif self.type == 3:
             if node.type == 'declaration':
                 if isinstance(node.children, list):
@@ -55,10 +59,16 @@ class Error_Handler:
                     sys.stderr.write(f'Variant "{node.children.value.value}" at line {self.node.lineno} size doesn\'t match initializator size\n')
         elif self.type == 5:
             sys.stderr.write(f'Can\'t find necessary part of the variant "{node.children.value}" for convertation at line {self.node.lineno}\n')
+        elif self.type == 6:
+            sys.stderr.write(f'Function parametr using not in function at line {self.node.lineno}\n')
         elif self.type == 7:
             sys.stderr.write(f'Variants sizes doesn\'t match at line {self.node.lineno}\n')
         elif self.type == 8:
             sys.stderr.write(f'Amount of indexes doesn\'t match variant size at line {self.node.lineno}\n')
+        elif self.type == 9:
+            sys.stderr.write(f'>1 returns in function at line {self.node.lineno}\n')
+        elif self.type == 10:
+            sys.stderr.write(f'Maximum recursion depth reached\n')
 
 
 class InterpreterConvertationError(Exception):
@@ -90,4 +100,8 @@ class InterpreterSumSizeError(Exception):
 
 
 class InterpreterIndexNumError(Exception):
+    pass
+
+
+class InterpreterRecursionError(Exception):
     pass
