@@ -637,35 +637,50 @@ class Interpreter:
         if type(value) == int:
             value = - value
         elif type(value) == bool:
-            if value:
-                value = False
-            else:
-                value = True
+            value = not value
         elif type(value) == str:
-            pass
-            # TODO: minus for strings(robot commands)
+            value = self.string_negation(value)
         elif type(value) == dict:
             value['int'] = -value['int']
-            if value['bool']:
-                value['bool'] = False
-            else:
-                value['bool'] = True
+            value['bool'] = not value['bool']
         elif type(value) == list:
             for elem in value:
                 if isinstance(elem, list):
                     for elem1 in elem:
                         elem1['int'] = -elem1['int']
-                        if elem1['bool']:
-                            elem1['bool'] = False
-                        else:
-                            elem1['bool'] = True
+                        elem1['bool'] = not elem1['bool']
+                        elem1['string'] = self.string_negation(elem1['string'])
                 else:
                     elem['int'] = -elem['int']
-                    if elem['bool']:
-                        elem['bool'] = False
-                    else:
-                        elem['bool'] = True
+                    elem['bool'] = not elem['bool']
+                    elem['string'] = self.string_negation(elem['string'])
         return value
+
+    def string_negation(self, value):
+        words = value.split()
+        res = ''
+        for word in words:
+            if word == 'UP':
+                newword = 'DOWN'
+            elif word == 'DOWN':
+                newword = 'UP'
+            elif word == 'LEFT':
+                newword = 'RIGHT'
+            elif word == 'RIGHT':
+                newword = 'LEFT'
+            elif word == 'LOOKUP':
+                newword = 'LOOKDOWN'
+            elif word == 'LOOKDOWN':
+                newword = 'LOOKUP'
+            elif word == 'LOOKLEFT':
+                newword = 'LOOKRIGHT'
+            elif word == 'LOOKRIGHT':
+                newword = 'LOOKLEFT'
+            else:
+                newword = word
+            res += newword + ' '
+        res = res[:-1]
+        return res
 
     def bin_plus(self, _expression1, _expression2):
         value1 = _expression1
@@ -778,14 +793,13 @@ class Interpreter:
 
 
 
-data = '''VARIANT a [3, 2] = {{123, TRUE; "NRNU";}{2;}}
-VARIANT b [1, 5]
-b [2] = TRUE
+data = '''VARIANT a [3, 2] = {{"DOWN";12;}{"LOOKDOWN UP"; 1;}{TRUE; "pop 1234 down DOWN LEFT LOOKRIGHT";}}
+a = -a
 '''
 data1 ='''
 VARIANT n
 n = 5
-VARIANT a [n[]] = {{8;}{2;}{3;}{-3;}{15;}}
+VARIANT a [n] = {{8;}{150 + 2;}{3;}{-3;}{15;}}
 VARIANT min
 VARIANT i
 VARIANT j
@@ -795,13 +809,13 @@ VARIANT buf
 VARIANT buf1
 buf1 = TRUE
 WHILE buf1
-min = a[j[]]
+min = a[j]
 buf1 = TRUE
 WHILE buf1
-IFLESS a[i[]], min[]
+IFLESS a[i], min
 buf = min
-min = a[i[]]
-a[i[]] = buf
+min = a[i]
+a[i] = buf
 ENDIF
 i = i + 1
 IFZERO i+ -n
@@ -809,7 +823,7 @@ buf1 = FALSE
 ENDIF
 ENDW
 buf1 = TRUE
-a[j[]] = min
+a[j] = min
 j = j + 1
 i = j
 IFZERO j+ -n
@@ -818,7 +832,7 @@ ENDIF
 ENDW
 '''
 a = Interpreter()
-a.interpreter(data1)
+a.interpreter(data)
 pass
 
 # a = Variant(1, 4)
