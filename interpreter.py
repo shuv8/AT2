@@ -192,6 +192,9 @@ class Interpreter:
                 except InterpreterIndexNumError:
                     self.error.call(self.error_types['IndexNumError'], node)
                     buf = 0
+                except InterpreterIndexError:
+                    self.error.call(self.error_types['IndexError'], node)
+                    buf = 0
             return buf
         elif node.type == 'func_param':
             if self.scope == 0:
@@ -269,7 +272,16 @@ class Interpreter:
                 self.error.call(self.error_types['IndexError'], node)
                 return False
         elif node.type == 'string_expression':
-            return self.interpreter_node(node.children)
+            buf = self.interpreter_node(node.children)
+            if isinstance(buf, list) and isinstance(buf[0], dict) and len(buf) == 1:
+                return buf[0]['string']
+            elif isinstance(buf, dict):
+                return buf['string']
+            elif type(buf) == str:
+                return buf
+            else:
+                self.error.call(self.error_types['IndexError'], node)
+                return ''
         elif node.type == 'assignment':
             var_name = node.value.value
             if var_name not in self.symbol_table[self.scope].keys():
@@ -417,6 +429,9 @@ class Interpreter:
                     self.interpreter_node(node.children['body'])
             elif node.children['condition'].value == 'IFNHIGH':
                 if self.interpreter_node(node.children['conditional_expressions'].children[0]) <= self.interpreter_node(node.children['conditional_expressions'].children[1]):
+                    self.interpreter_node(node.children['body'])
+            elif node.children['condition'].value == 'IFEQUAL':
+                if self.interpreter_node(node.children['conditional_expressions'].children[0]) == self.interpreter_node(node.children['conditional_expressions'].children[1]):
                     self.interpreter_node(node.children['body'])
         elif node.type == 'func_descriptor':
             pass
@@ -890,16 +905,11 @@ class Interpreter:
 
 
 
-data = '''FUNC test
+data = '''VARIANT b
+b = "WALL"
+IFEQUAL "EXIT", "WALL"
 VARIANT a
-a = "A B C"
-VARIANT c[2,0]
-c[0] = a[]
-c[1] = PARAM[]
-ENDFUNC
-
-VARIANT a
-a = CALL test " D E F"
+ENDIF
 '''
 data1 ='''
 FUNC sort

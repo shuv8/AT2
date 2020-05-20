@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="522d7431-aa16-4c35-ba74-ea0ad5f2cb64" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lexer/lexer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lexer/lexer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parser.out" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parsetab.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parsetab.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/interpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/interpreter.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -147,20 +142,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1587970949147</updated>
-    </task>
-    <task id="LOCAL-00001" summary="Lexer 0.2&#10;-Whitespaces ignored">
-      <created>1587981764921</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1587981764948</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Lexer 0.2&#10;-Whitespaces ignored">
-      <created>1587982005617</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1587982005617</updated>
     </task>
     <task id="LOCAL-00003" summary="Lexer 0.3.1&#10;-Doublequote token deleted">
       <created>1588439771960</created>
@@ -491,7 +472,21 @@
       <option name="project" value="LOCAL" />
       <updated>1589976303297</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Lexer 1.0&#10;-&quot;IFEQUAL&quot; token added">
+      <created>1589977373636</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1589977373637</updated>
+    </task>
+    <task id="LOCAL-00051" summary="Parser 1.0&#10;-&quot;IFEQUAL&quot; rule for string equality check added">
+      <created>1589977429044</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1589977429044</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -508,8 +503,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Interpreter 0.3.1&#10;-Fixes in right-side variants using&#10;-Unary minus added" />
-    <MESSAGE value="Interpreter 0.3.2&#10;-Binary plus added" />
     <MESSAGE value="Interpreter 0.3.3&#10;-Binary plus fixed" />
     <MESSAGE value="Error Handler 0.1.4&#10;-More errors added" />
     <MESSAGE value="Error Handler 0.1.5&#10;-More errors added" />
@@ -533,14 +526,16 @@
     <MESSAGE value="Robot 0.1&#10;-Robot added" />
     <MESSAGE value="Interpreter 0.5.2&#10;-Function fixed" />
     <MESSAGE value="Error Handler 0.1.9&#10;-More errors added" />
-    <option name="LAST_COMMIT_MESSAGE" value="Error Handler 0.1.9&#10;-More errors added" />
+    <MESSAGE value="Lexer 1.0&#10;-&quot;IFEQUAL&quot; token added" />
+    <MESSAGE value="Parser 1.0&#10;-&quot;IFEQUAL&quot; rule for string equality check added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parser 1.0&#10;-&quot;IFEQUAL&quot; rule for string equality check added" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="422" y="158" key="CommitChangelistDialog2" timestamp="1589977372875">
+    <state x="422" y="158" key="CommitChangelistDialog2" timestamp="1589977428113">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="583" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1589115218590" />
-    <state x="422" y="158" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589977372875" />
+    <state x="422" y="158" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589977428113" />
     <state x="1220" y="278" key="FileChooserDialogImpl" timestamp="1588863189923">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -597,11 +592,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="807" y="436" key="VCS.ChangelistChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1589894785871" />
-    <state x="560" y="357" key="Vcs.Push.Dialog.v2" timestamp="1589977374735">
+    <state x="560" y="357" key="Vcs.Push.Dialog.v2" timestamp="1589977431898">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1589115224437" />
-    <state x="560" y="357" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589977374735" />
+    <state x="560" y="357" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589977431898" />
     <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1589894656037">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -624,7 +619,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/interpreter.py</url>
-          <line>971</line>
+          <line>974</line>
           <option name="timeStamp" value="49" />
         </line-breakpoint>
       </breakpoints>
