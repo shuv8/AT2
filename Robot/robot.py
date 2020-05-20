@@ -1,7 +1,7 @@
 squares = {
     ' ': 'EMPTY',
-    'e': 'EXIT',
-    'w': 'WALL'
+    'E': 'EXIT',
+    'W': 'WALL'
 }
 
 look = {
@@ -36,3 +36,54 @@ class Robot:
                 else:
                     print(self.map[i][j].type, end='  ')
             print()
+
+    def move(self, direction):
+        if direction == 'UP' and self.map[self.y - 1][self.x].type != 'WALL':
+            self.y -= 1
+            return True
+        elif direction == 'DOWN' and self.map[self.y + 1][self.x].type != 'WALL':
+            self.y += 1
+            return True
+        elif direction == 'LEFT' and self.map[self.y][self.x - 1].type != 'WALL':
+            self.x -= 1
+            return True
+        elif direction == 'RIGHT' and self.map[self.y][self.x + 1].type != 'WALL':
+            self.x += 1
+            return True
+        return False
+
+    def exit(self):
+        if self.map[self.y][self.x].type == 'EXIT':
+            return True
+        return False
+
+    def look(self, direction):
+        buf = 1
+        if direction == 'LOOKUP':
+            while self.map[self.y - buf][self.x].type == 'EMPTY':
+                buf += 1
+            if self.map[self.y - buf][self.x].type == 'WALL':
+                return 'WALL', buf
+            elif self.map[self.y - buf][self.x].type == 'EXIT':
+                return 'EXIT', buf
+        elif direction == 'LOOKDOWN':
+            while self.map[self.y + buf][self.x].type == 'EMPTY':
+                buf += 1
+            if self.map[self.y + buf][self.x].type == 'WALL':
+                return 'WALL', buf
+            elif self.map[self.y + buf][self.x].type == 'EXIT':
+                return 'EXIT', buf
+        elif direction == 'LOOKLEFT':
+            while self.map[self.y][self.x - buf].type == 'EMPTY':
+                buf += 1
+            if self.map[self.y][self.x - buf].type == 'WALL':
+                return 'WALL', buf
+            elif self.map[self.y][self.x - buf].type == 'EXIT':
+                return 'EXIT', buf
+        elif direction == 'LOOKRIGHT':
+            while self.map[self.y][self.x + buf].type == 'EMPTY':
+                buf += 1
+            if self.map[self.y][self.x + buf].type == 'WALL':
+                return 'WALL', buf
+            elif self.map[self.y][self.x + buf].type == 'EXIT':
+                return 'EXIT', buf
