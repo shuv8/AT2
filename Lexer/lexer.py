@@ -29,6 +29,7 @@ reserved = {
     'IFNZERO': 'IFNZERO',
     'IFHIGH': 'IFHIGH',
     'IFNHIGH': 'IFNHIGH',
+    'IFEQUAL': 'IFEQUAL',
     'ENDIF': 'ENDIF',
 
     #robot
