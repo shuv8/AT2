@@ -15,7 +15,8 @@ class Error_Handler:
                       'SumSizeError',
                       'IndexNumError',
                       'ReturnRepeatError',
-                      'RecursionError']
+                      'RecursionError',
+                      'ReturnError']
 
     def call(self, error_type, node=None):
         self.type = error_type
@@ -69,6 +70,8 @@ class Error_Handler:
             sys.stderr.write(f'>1 returns in function at line {self.node.lineno}\n')
         elif self.type == 10:
             sys.stderr.write(f'Maximum recursion depth reached\n')
+        elif self.type == 11:
+            sys.stderr.write(f'Function return expression expected but missing at line {self.node.lineno}\n')
 
 
 class InterpreterConvertationError(Exception):

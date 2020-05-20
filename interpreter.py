@@ -884,7 +884,6 @@ class Interpreter:
             result = copy.deepcopy(self.symbol_table[self.scope]['#RETURN'])
         else:
             result = None
-            # TODO: handle error when nothing is returned but function call is expression
         self.symbol_table.pop()
         self.scope -= 1
         return result
