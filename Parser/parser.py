@@ -270,7 +270,8 @@ class Parser(object):
               | IFZERO decimal_expression NEWLINE statements ENDIF
               | IFNZERO decimal_expression NEWLINE statements ENDIF
               | IFHIGH decimal_expression COMMA decimal_expression NEWLINE statements ENDIF
-              | IFNHIGH decimal_expression COMMA decimal_expression NEWLINE statements ENDIF"""
+              | IFNHIGH decimal_expression COMMA decimal_expression NEWLINE statements ENDIF
+              | IFEQUAL string_expression COMMA string_expression NEWLINE statements ENDIF"""
         if len(p) == 6:
             p[0] = TreeNode('if', children={'condition': TreeNode('condition', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1)),
                                         'conditional_expressions': TreeNode('conditional_expressions', children=p[2], lineno=p.lineno(2), lexpos=p.lexpos(2)),
@@ -428,6 +429,7 @@ class Parser(object):
               | IFNZERO error NEWLINE statements ENDIF
               | IFHIGH error NEWLINE statements ENDIF
               | IFNHIGH error NEWLINE statements ENDIF
+              | IFEQUAL error NEWLINE statements ENDIF
 
               | IFLESS decimal_expression COMMA decimal_expression NEWLINE statements error
               | IFNLESS decimal_expression COMMA decimal_expression NEWLINE statements error
@@ -435,6 +437,7 @@ class Parser(object):
               | IFNZERO decimal_expression NEWLINE statements error
               | IFHIGH decimal_expression COMMA decimal_expression NEWLINE statements error
               | IFNHIGH decimal_expression COMMA decimal_expression NEWLINE statements error
+              | IFEQUAL string_expression COMMA string_expression NEWLINE statements error
 
               | IFLESS decimal_expression COMMA decimal_expression statements ENDIF
               | IFNLESS decimal_expression COMMA decimal_expression statements ENDIF
@@ -442,6 +445,7 @@ class Parser(object):
               | IFNZERO decimal_expression statements ENDIF
               | IFHIGH decimal_expression COMMA decimal_expression statements ENDIF
               | IFNHIGH decimal_expression COMMA decimal_expression statements ENDIF
+              | IFEQUAL string_expression COMMA string_expression statements ENDIF
 
               | if error"""
         p[0] = TreeNode('if_error', value='\'If\' error', lineno=p.lineno(1), lexpos=p.lexpos(1))
