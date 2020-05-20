@@ -16,7 +16,9 @@ class Error_Handler:
                       'IndexNumError',
                       'ReturnRepeatError',
                       'RecursionError',
-                      'ReturnError']
+                      'ReturnError',
+                      'CommandError',
+                      'RobotError']
 
     def call(self, error_type, node=None):
         self.type = error_type
@@ -72,6 +74,10 @@ class Error_Handler:
             sys.stderr.write(f'Maximum recursion depth reached\n')
         elif self.type == 11:
             sys.stderr.write(f'Function return expression expected but missing at line {self.node.lineno}\n')
+        elif self.type == 12:
+            sys.stderr.write(f'Inappropriate word in robot command at line {self.node.lineno}\n')
+        elif self.type == 13:
+            sys.stderr.write(f'There are no robot to execute this command at line {self.node.lineno}\n')
 
 
 class InterpreterConvertationError(Exception):
