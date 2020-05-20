@@ -3,6 +3,7 @@ import re
 import copy
 from Parser.parser import Parser
 from SyntaxTree.Tree import TreeNode
+from Robot.robot import Robot, Square, squares
 from Errors.errors import Error_Handler
 from Errors.errors import InterpreterConvertationError
 from Errors.errors import InterpreterParametrError
@@ -98,6 +99,9 @@ class Interpreter:
         self.tree = None
         self.functions = None
         self.scope = 0
+        self.robot = None
+        self.exit = False
+        self.correct = True
         self.error = Error_Handler()
         self.error_types = {'UnexpectedError': 0,
                             'RedeclarationError': 1,
@@ -110,17 +114,23 @@ class Interpreter:
                             'IndexNumError': 8,
                             'ReturnRepeatError': 9,
                             'RecursionError': 10,
-                            'ReturnError': 11}
+                            'ReturnError': 11,
+                            'CommandError': 12,
+                            'RobotError': 13}
 
-    def interpreter(self, program=None):
+    def interpreter(self, program=None, robot=None, tree_print=False):
         self.program = program
+        self.robot = robot
         self.symbol_table = [dict()]
         self.tree, _ok, self.functions = self.parser.parse(self.program)
         if _ok:
-            self.interpreter_tree(self.tree)
+            if tree_print:
+                self.interpreter_tree(self.tree)
             self.interpreter_node(self.tree)
+            return self.correct
         else:
             sys.stderr.write(f'Can\'t interpretate this program. Incorrect syntax!\n')
+            return False
 
     def interpreter_tree(self, tree):
         print("Program tree:\n")
@@ -150,26 +160,33 @@ class Interpreter:
                     self.declare_variant(declaration_child[0], initialization)
                 except InterpreterRedeclarationError:
                     self.error.call(self.error_types['RedeclarationError'], node)
+                    self.correct = False
                 except InterpreterIndexError:
                     self.error.call(self.error_types['IndexError'], node)
+                    self.correct = False
                 except InterpreterInitSizeError:
                     self.error.call(self.error_types['InitSizeError'], node)
+                    self.correct = False
             else:
                 try:
                     self.declare_variant(declaration_child)
                 except InterpreterRedeclarationError:
                     self.error.call(self.error_types['RedeclarationError'], node)
+                    self.correct = False
                 except InterpreterIndexError:
                     self.error.call(self.error_types['IndexError'], node)
+                    self.correct = False
         elif node.type == 'expression':
             res = self.interpreter_node(node.children)
             if res is None:
                 self.error.call(self.error_types['ReturnError'], node.children)
+                self.correct = False
                 res = 0
             return res
         elif node.type == 'variant':
             if node.value not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
+                self.correct = False
                 buf = 0
             else:
                 if node.children is not None and node.children.type != 'empty_varsize':
@@ -191,17 +208,21 @@ class Interpreter:
                     buf = self.get_variant_value(node, index=_index)
                 except InterpreterIndexNumError:
                     self.error.call(self.error_types['IndexNumError'], node)
+                    self.correct = False
                     buf = 0
                 except InterpreterIndexError:
                     self.error.call(self.error_types['IndexError'], node)
+                    self.correct = False
                     buf = 0
             return buf
         elif node.type == 'func_param':
             if self.scope == 0:
                 self.error.call(self.error_types['ParametrError'], node)
+                self.correct = False
                 buf = 0
             elif node.value not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
+                self.correct = False
                 buf = 0
             else:
                 if node.children is not None and node.children.type != 'empty_varsize':
@@ -223,6 +244,7 @@ class Interpreter:
                     buf = self.get_variant_value(node, index=_index)
                 except InterpreterIndexNumError:
                     self.error.call(self.error_types['IndexNumError'], node)
+                    self.correct = False
                     buf = 0
             return buf
         elif node.type == 'const_expressions':
@@ -247,6 +269,7 @@ class Interpreter:
                 res = self.bin_plus(value1, value2)
             except InterpreterSumSizeError:
                 self.error.call(self.error_types['SumSizeError'], node)
+                self.correct = False
                 res = 0
             return res
         elif node.type == 'decimal_expression':
@@ -259,6 +282,7 @@ class Interpreter:
                 return buf
             else:
                 self.error.call(self.error_types['IndexError'], node)
+                self.correct = False
                 return 0
         elif node.type == 'bool_expression':
             buf = self.interpreter_node(node.children)
@@ -270,6 +294,7 @@ class Interpreter:
                 return buf
             else:
                 self.error.call(self.error_types['IndexError'], node)
+                self.correct = False
                 return False
         elif node.type == 'string_expression':
             buf = self.interpreter_node(node.children)
@@ -281,20 +306,24 @@ class Interpreter:
                 return buf
             else:
                 self.error.call(self.error_types['IndexError'], node)
+                self.correct = False
                 return ''
         elif node.type == 'assignment':
             var_name = node.value.value
             if var_name not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
+                self.correct = False
             else:
                 er = 0
                 try:
                     expression = self.interpreter_node(node.children)
                 except InterpreterUndeclaredError:
                     self.error.call(self.error_types['UndeclaredError'], node.children)
+                    self.correct = False
                     er = 1
                 except InterpreterIndexError:
                     self.error.call(self.error_types['IndexError'], node.children.children)
+                    self.correct = False
                     er = 1
                 if node.value.children is not None and node.value.children.type != 'empty_varsize':
                     _index = node.value.children.children
@@ -304,11 +333,13 @@ class Interpreter:
                         index.append(self.interpreter_node(_index[1]))
                         if index[0] < 0 or index[1] < 0:
                             self.error.call(self.error_types['IndexError'], node.children)
+                            self.correct = False
                             er = 1
                     else:
                         index.append(self.interpreter_node(_index))
                         if index[0] < 0:
                             self.error.call(self.error_types['IndexError'], node.children)
+                            self.correct = False
                             er = 1
                 elif node.value.children is not None and node.value.children.type == 'empty_varsize':
                     if isinstance(self.symbol_table[self.scope][var_name][0], list):
@@ -322,13 +353,16 @@ class Interpreter:
                         self.assign(var_name, expression, index)
                     except InterpreterIndexError:
                         self.error.call(self.error_types['IndexError'], node)
+                        self.correct = False
                     except InterpreterIndexNumError:
                         self.error.call(self.error_types['IndexNumError'], node)
+                        self.correct = False
         elif node.type == 'convert':
             variant = node.children
             er = 0
             if variant.value not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
+                self.correct = False
                 er = 1
             else:
                 if node.children.children is not None and node.children.children.type != 'empty_varsize':
@@ -339,11 +373,13 @@ class Interpreter:
                         index.append(self.interpreter_node(_index[1]))
                         if index[0] < 0 or index[1] < 0:
                             self.error.call(self.error_types['IndexError'], node.children)
+                            self.correct = False
                             er = 1
                     else:
                         index.append(self.interpreter_node(_index))
                         if index[0] < 0:
                             self.error.call(self.error_types['IndexError'], node.children)
+                            self.correct = False
                             er = 1
                 elif node.children.children is not None and node.children.children.type == 'empty_varsize':
                     if isinstance(self.symbol_table[self.scope][variant.value][0], list):
@@ -359,17 +395,22 @@ class Interpreter:
                         self.convert(node.children, index, type1, type2)
                     except InterpreterUndeclaredError:
                         self.error.call(self.error_types['UndeclaredError'], node)
+                        self.correct = False
                     except InterpreterIndexError:
                         self.error.call(self.error_types['IndexError'], node)
+                        self.correct = False
                     except InterpreterIndexNumError:
                         self.error.call(self.error_types['IndexNumError'], node)
+                        self.correct = False
                     except InterpreterConvertationError:
                         self.error.call(self.error_types['ConvertationError'], node)
+                        self.correct = False
         elif node.type == 'digitize':
             variant = node.children
             er = 0
             if variant.value not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
+                self.correct = False
                 er = 1
             else:
                 if node.children.children is not None and node.children.children.type != 'empty_varsize':
@@ -380,11 +421,13 @@ class Interpreter:
                         index.append(self.interpreter_node(_index[1]))
                         if index[0] < 0 or index[1] < 0:
                             self.error.call(self.error_types['IndexError'], node.children)
+                            self.correct = False
                             er = 1
                     else:
                         index.append(self.interpreter_node(_index))
                         if index[0] < 0:
                             self.error.call(self.error_types['IndexError'], node.children)
+                            self.correct = False
                             er = 1
                 elif node.children.children is not None and node.children.children.type == 'empty_varsize':
                     if isinstance(self.symbol_table[self.scope][variant.value][0], list):
@@ -399,12 +442,16 @@ class Interpreter:
                         self.convert(node.children, index, type1, type2='int')
                     except InterpreterUndeclaredError:
                         self.error.call(self.error_types['UndeclaredError'], node)
+                        self.correct = False
                     except InterpreterIndexError:
                         self.error.call(self.error_types['IndexError'], node)
+                        self.correct = False
                     except InterpreterIndexNumError:
                         self.error.call(self.error_types['IndexNumError'], node)
+                        self.correct = False
                     except InterpreterConvertationError:
                         self.error.call(self.error_types['ConvertationError'], node)
+                        self.correct = False
         elif node.type == 'while':
             while self.interpreter_node(node.children['condition']):
                 self.interpreter_node(node.children['body'])
@@ -456,21 +503,37 @@ class Interpreter:
                 res = self.func_call(node.value['name'], param)
             except InterpreterParametrError:
                 self.error.call(self.error_types['ParametrError'], node)
+                self.correct = False
                 res = 0
             except InterpreterRecursionError:
                 self.error.call(self.error_types['RecursionError'], node)
+                self.correct = False
                 res = 0
             return res
         elif node.type == 'return':
             if '#RETURN' in self.symbol_table[self.scope].keys():
-                self.error.call(self.error_types['ReturnRepeatError'], node)
+                pass
             else:
                 self.symbol_table[self.scope]['#RETURN'] = self.interpreter_node(node.children)
-
-
-
-
-
+        elif node.type == 'command':
+            if self.robot is None:
+                self.error.call(self.error_types['RobotError'], node)
+                self.correct = False
+                return 0
+            string_of_commands = self.interpreter_node(node.children)
+            commands = string_of_commands.split()
+            reg = r'UP|DOWN|LEFT|RIGHT|LOOKUP|LOOKDOWN|LOOKLEFT|LOOKRIGHT'
+            res = []
+            for cmd in commands:
+                if re.fullmatch(reg, cmd) is None:
+                    self.error.call(self.error_types['CommandError'], node)
+                    self.correct = False
+                    return 0
+            for cmd in commands:
+                if cmd == 'UP' or cmd == 'DOWN' or cmd == 'LEFT' or cmd == 'RIGHT':
+                    res.append(self.move(cmd))
+                elif cmd == 'LOOKUP' or cmd == 'LOOKDOWN' or cmd == 'LOOKLEFT' or cmd == 'LOOKRIGHT':
+                    res.append(self.look(cmd))
 
     def declare_variant(self, variant, init=None):
         if variant.children is not None:
@@ -903,76 +966,58 @@ class Interpreter:
         self.scope -= 1
         return result
 
+    def move(self, command):
+        res = self.robot.move(command)
+        self.exit = self.robot.exit()
+        return {'int': 0, 'bool': res, 'string': ''}
+
+    def look(self, command):
+        type, distance = self.robot.look(command)
+        return {'int': distance, 'bool': False, 'string': type}
 
 
-data = '''VARIANT b
-b = "WALL"
-IFEQUAL "EXIT", "WALL"
-VARIANT a
-ENDIF
-'''
-data1 ='''
-FUNC sort
-VARIANT n
-n = PARAM [0,0]
-VARIANT a [n]
-a[0] = PARAM[1,0]
-a[1] = PARAM[1,1]
-a[2] = PARAM[1,2]
-a[3] = PARAM[1,3]
-a[4] = PARAM[1,4]
-VARIANT min
-VARIANT i
-VARIANT j
-i = 0
-j = i
-VARIANT buf
-VARIANT buf1
-buf1 = TRUE
-IFZERO j+ -n
-buf1 = FALSE
-ENDIF
-WHILE buf1
-min = a[j]
-buf1 = TRUE
-IFZERO i+ -n
-buf1 = FALSE
-ENDIF
-WHILE buf1
-IFLESS a[i], min
-buf = min
-min = a[i]
-a[i] = buf
-ENDIF
-i = i + 1
-IFZERO i+ -n
-buf1 = FALSE
-ENDIF
-ENDW
-buf1 = TRUE
-a[j] = min
-j = j + 1
-i = j
-IFZERO j+ -n
-buf1 = FALSE
-ENDIF
-ENDW
-RETURN a
-ENDFUNC
+def make_robot(descriptor):
+    with open(descriptor) as file:
+        info = file.read()
+    info = info.split('\n')
+    map_size = info.pop(0).split()
+    robot_coordinates = info.pop(0).split()
+    x = robot_coordinates[0]
+    y = robot_coordinates[1]
+    map = [0] * int(map_size[0])
+    for i in range(int(map_size[0])):
+        map[i] = [0] * int(map_size[1])
+    for i in range(int(map_size[0])):
+        for j in range(int(map_size[1])):
+            map[i][j] = Square("EMPTY")
+    buf = 0
+    while len(info) > 0:
+        ln = list(info.pop(0))
+        ln = [Square(squares[i]) for i in ln]
+        map[buf] = ln
+        buf += 1
+    return Robot(x, y, map)
 
 
-VARIANT a [2,5]
-a[0,0] = 5
-a[1,0] = 123
-a[1,1]=2
-a[1,2]= -12
-a[1,3] = 90
-a[1,4] = 123
-a = CALL sort a
-'''
-a = Interpreter()
-a.interpreter(data)
-pass
-
-# a = Variant(1, 4)
-# print(a)
+if __name__ == '__main__':
+    tests = ['Data/sum.txt', 'Data/simple_func.txt', 'Data/sort.txt', 'Data/syntax_error.txt']
+    maps = []
+    print("Make your choice: 1 - test, 2 - robot")
+    n = int(input())
+    if n == 1:
+        interpreter = Interpreter()
+        print('Which test do you want to run?\n0 - Simple addition\n1 - Simple function\n2 - Sort\n3 - Syntax errors')
+        num = int(input())
+        if num not in range(len(tests)):
+            print('Wrong choice')
+        else:
+            prog = open(tests[num], 'r').read()
+            res = interpreter.interpreter(program=prog, tree_print=False)
+            if res:
+                print('Result symbol table:')
+                for key, value in interpreter.symbol_table[0].items():
+                    print(key,'=', value)
+    elif n == 2:
+        pass
+    else:
+        print('Wrong choice!\n')
