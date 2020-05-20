@@ -109,7 +109,8 @@ class Interpreter:
                             'SumSizeError': 7,
                             'IndexNumError': 8,
                             'ReturnRepeatError': 9,
-                            'RecursionError': 10}
+                            'RecursionError': 10,
+                            'ReturnError': 11}
 
     def interpreter(self, program=None):
         self.program = program
@@ -161,7 +162,11 @@ class Interpreter:
                 except InterpreterIndexError:
                     self.error.call(self.error_types['IndexError'], node)
         elif node.type == 'expression':
-            return self.interpreter_node(node.children)
+            res = self.interpreter_node(node.children)
+            if res is None:
+                self.error.call(self.error_types['ReturnError'], node.children)
+                res = 0
+            return res
         elif node.type == 'variant':
             if node.value not in self.symbol_table[self.scope].keys():
                 self.error.call(self.error_types['UndeclaredError'], node)
@@ -879,6 +884,7 @@ class Interpreter:
             result = copy.deepcopy(self.symbol_table[self.scope]['#RETURN'])
         else:
             result = None
+            # TODO: handle error when nothing is returned but function call is expression
         self.symbol_table.pop()
         self.scope -= 1
         return result
@@ -891,12 +897,6 @@ a = "A B C"
 VARIANT c[2,0]
 c[0] = a[]
 c[1] = PARAM[]
-c = CALL test CALL sum c
-RETURN c
-ENDFUNC
-
-FUNC sum
-RETURN PARAM[0] + PARAM[1]
 ENDFUNC
 
 VARIANT a
