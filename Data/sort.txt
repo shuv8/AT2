@@ -1,0 +1,58 @@
+FUNC sort
+VARIANT n
+n = PARAM [0,0]
+VARIANT a [n]
+a[0] = PARAM[1,0]
+a[1] = PARAM[1,1]
+a[2] = PARAM[1,2]
+a[3] = PARAM[1,3]
+a[4] = PARAM[1,4]
+VARIANT min
+VARIANT i
+VARIANT j
+i = 0
+j = i
+VARIANT buf
+VARIANT buf1
+buf1 = TRUE
+IFZERO j+ -n
+buf1 = FALSE
+ENDIF
+WHILE buf1
+min = a[j]
+buf1 = TRUE
+IFZERO i+ -n
+buf1 = FALSE
+ENDIF
+WHILE buf1
+IFLESS a[i], min
+buf = min
+min = a[i]
+a[i] = buf
+ENDIF
+i = i + 1
+IFZERO i+ -n
+buf1 = FALSE
+ENDIF
+ENDW
+buf1 = TRUE
+a[j] = min
+j = j + 1
+i = j
+IFZERO j+ -n
+buf1 = FALSE
+ENDIF
+ENDW
+RETURN a
+ENDFUNC
+
+
+VARIANT a [1,5]
+a[0,0] = 5
+a[1,0] = 123
+a[1,1] = 2
+a[1,2]= -12
+a[1,3] = 90
+a[1,4] = 123
+VARIANT source_array [5,0] = {{123;}{2;}{-12;}{90;}{123;}}
+a = CALL sort a

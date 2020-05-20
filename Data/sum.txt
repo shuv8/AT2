@@ -1,0 +1,6 @@
+VARIANT a
+VARIANT b
+a = 123
+b = -23
+VARIANT c
+c = a + b

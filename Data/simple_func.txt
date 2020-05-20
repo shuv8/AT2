@@ -1,0 +1,9 @@
+FUNC str_add
+VARIANT a = {{" This part was added in the function!";}}
+RETURN PARAM[] + a[]
+ENDFUNC
+
+VARIANT a
+a = "String."
+VARIANT res
+res = CALL str_add a
