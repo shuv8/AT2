@@ -1,0 +1,11 @@
+VARIANT a [1, 2] = {{12;}{1;}}
+VARIANT b
+VARIANT c
+b = c + d
+b = c[]
+b = c[2]
+CONVERT STRING TO DIGIT b
+c = PARAM
+VARIANT b
+c = 2 + "2"
+b = c + c[0,0]
