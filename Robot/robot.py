@@ -4,12 +4,6 @@ squares = {
     'W': 'WALL'
 }
 
-look = {
-    '0': 'up',
-    '1': 'down',
-    '2': 'left',
-    '3': 'right'
-}
 
 class Square:
     def __init__(self, type):
@@ -31,10 +25,15 @@ class Robot:
     def show(self):
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
-                if i == self.x and j == self.x:
-                    print('ROBOT', end='  ')
+                if i == self.y and j == self.x:
+                    print('R', end='')
                 else:
-                    print(self.map[i][j].type, end='  ')
+                    if self.map[i][j].type == 'WALL':
+                        print('W', end='')
+                    elif self.map[i][j].type == 'EMPTY':
+                        print(' ', end='')
+                    elif self.map[i][j].type == 'EXIT':
+                        print('E', end='')
             print()
 
     def move(self, direction):
@@ -58,7 +57,7 @@ class Robot:
         return False
 
     def look(self, direction):
-        buf = 1
+        buf = 0
         if direction == 'LOOKUP':
             while self.map[self.y - buf][self.x].type == 'EMPTY':
                 buf += 1
