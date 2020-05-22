@@ -1,0 +1,104 @@
+FUNC find_exit
+VARIANT exit
+VARIANT direction
+direction = "DOWN"
+VARIANT buf
+VARIANT buf1
+VARIANT buf2
+VARIANT scope
+scope = 1000
+buf = TRUE
+WHILE buf[]
+buf = COMMAND direction[]
+ENDW
+direction = "UP"
+UNTIL exit[]
+    direction[] = CALL rotate_right direction[]
+    exit = CALL fexit
+    buf2 = exit
+    UNTIL buf2
+    buf = COMMAND direction[]
+    UNTIL buf
+        direction[] = CALL rotate_left direction[]
+        buf1 = COMMAND direction[]
+        UNTIL buf1
+            direction[] = CALL rotate_left direction[]
+            buf1 = TRUE
+        ENDU
+        buf = TRUE
+    ENDU
+    buf2 = TRUE
+    ENDU
+    scope = scope + -1
+    IFZERO scope
+    exit = TRUE
+    ENDIF
+ENDU
+ENDFUNC
+
+FUNC rotate_right
+VARIANT new
+IFEQUAL "UP", PARAM[]
+new = "RIGHT"
+ENDIF
+IFEQUAL "DOWN", PARAM[]
+new = "LEFT"
+ENDIF
+IFEQUAL "LEFT", PARAM[]
+new = "UP"
+ENDIF
+IFEQUAL "RIGHT", PARAM[]
+new = "DOWN"
+ENDIF
+RETURN new
+ENDFUNC
+
+FUNC rotate_left
+VARIANT new
+IFEQUAL "UP", PARAM[]
+new = "LEFT"
+ENDIF
+IFEQUAL "DOWN", PARAM[]
+new = "RIGHT"
+ENDIF
+IFEQUAL "LEFT", PARAM[]
+new = "DOWN"
+ENDIF
+IFEQUAL "RIGHT", PARAM[]
+new = "UP"
+ENDIF
+RETURN new
+ENDFUNC
+
+FUNC fexit
+VARIANT exit
+VARIANT ex
+exit = COMMAND "LOOKUP LOOKDOWN LOOKLEFT LOOKRIGHT"
+    IFEQUAL exit[0], "EXIT"
+        IFNHIGH exit[0], 1
+            COMMAND "UP"
+            ex = TRUE
+        ENDIF
+    ENDIF
+    IFEQUAL exit[1], "EXIT"
+        IFNHIGH exit[1], 1
+            COMMAND "DOWN"
+            ex = TRUE
+        ENDIF
+    ENDIF
+    IFEQUAL exit[2], "EXIT"
+        IFNHIGH exit[2], 1
+            COMMAND "LEFT"
+            ex = TRUE
+        ENDIF
+    ENDIF
+    IFEQUAL exit[3], "EXIT"
+        IFNHIGH exit[3], 1
+            COMMAND "RIGHT"
+            ex = TRUE
+        ENDIF
+    ENDIF
+RETURN ex
+ENDFUNC
+
+CALL find_exit
