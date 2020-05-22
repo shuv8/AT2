@@ -1,6 +1,7 @@
 import sys
 import re
 import copy
+from PIL import Image
 from Parser.parser import Parser
 from SyntaxTree.Tree import TreeNode
 from Robot.robot import Robot, Square, squares
@@ -14,6 +15,7 @@ from Errors.errors import InterpreterUndeclaredError
 from Errors.errors import InterpreterSumSizeError
 from Errors.errors import InterpreterIndexNumError
 from Errors.errors import InterpreterRecursionError
+from Errors.errors import InterpreterSumTypesError
 
 class Variant:
     def __init__(self, first_size=1, second_size=0):
@@ -116,7 +118,8 @@ class Interpreter:
                             'RecursionError': 10,
                             'ReturnError': 11,
                             'CommandError': 12,
-                            'RobotError': 13}
+                            'RobotError': 13,
+                            'SumTypesError': 14}
 
     def interpreter(self, program=None, robot=None, tree_print=False):
         self.program = program
@@ -269,6 +272,10 @@ class Interpreter:
                 res = self.bin_plus(value1, value2)
             except InterpreterSumSizeError:
                 self.error.call(self.error_types['SumSizeError'], node)
+                self.correct = False
+                res = 0
+            except InterpreterSumTypesError:
+                self.error.call(self.error_types['SumTypesError'], node)
                 self.correct = False
                 res = 0
             return res
@@ -534,6 +541,7 @@ class Interpreter:
                     res.append(self.move(cmd))
                 elif cmd == 'LOOKUP' or cmd == 'LOOKDOWN' or cmd == 'LOOKLEFT' or cmd == 'LOOKRIGHT':
                     res.append(self.look(cmd))
+            return res
 
     def declare_variant(self, variant, init=None):
         if variant.children is not None:
@@ -581,9 +589,9 @@ class Interpreter:
             init_size = [first_size, second_size]
         if name in self.symbol_table[self.scope].keys():
             raise InterpreterRedeclarationError
-        if init_size[1] == 1:
+        if len(init_size) == 2 and init_size[1] == 1:
             init_size[1] = 0
-        if init_size[0] != first_size or init_size[1] != second_size:
+        if init_size[0] != first_size or (second_size != 0 and len(init_size) != 2) or init_size[1] != second_size:
             raise InterpreterInitSizeError
         else:
             self.symbol_table[self.scope][name] = initialization
@@ -904,6 +912,7 @@ class Interpreter:
                     elif type(value2) == str:
                         elem['string'] += value2
             return value1
+        raise InterpreterSumTypesError
 
     def convert(self, variant, index, type1, type2):
         if type1 == 'DIGIT':
@@ -982,8 +991,8 @@ def make_robot(descriptor):
     info = info.split('\n')
     map_size = info.pop(0).split()
     robot_coordinates = info.pop(0).split()
-    x = robot_coordinates[0]
-    y = robot_coordinates[1]
+    x = int(robot_coordinates[0])
+    y = int(robot_coordinates[1])
     map = [0] * int(map_size[0])
     for i in range(int(map_size[0])):
         map[i] = [0] * int(map_size[1])
@@ -1000,13 +1009,14 @@ def make_robot(descriptor):
 
 
 if __name__ == '__main__':
-    tests = ['Data/sum.txt', 'Data/simple_func.txt', 'Data/sort.txt', 'Data/syntax_error.txt']
-    maps = []
+    tests = ['Data/sum.txt', 'Data/simple_func.txt', 'Data/sort.txt', 'Data/syntax_error.txt', 'Data/errors.txt']
+    maps = ['Data/simple_map.txt', 'Data/map_without_exit.txt', 'Data/empty_map.txt', 'Data/16x16.txt']
+    algo = ['Data/right_hand.txt']
     print("Make your choice: 1 - test, 2 - robot")
     n = int(input())
     if n == 1:
         interpreter = Interpreter()
-        print('Which test do you want to run?\n0 - Simple addition\n1 - Simple function\n2 - Sort\n3 - Syntax errors')
+        print('Which test do you want to run?\n0 - Simple addition\n1 - Simple function\n2 - Sort\n3 - Syntax errors\n4 - Interpreter errors')
         num = int(input())
         if num not in range(len(tests)):
             print('Wrong choice')
@@ -1018,6 +1028,30 @@ if __name__ == '__main__':
                 for key, value in interpreter.symbol_table[0].items():
                     print(key,'=', value)
     elif n == 2:
-        pass
+        print("Which map do you want to use?\n0 - Simple map\n1 - Map without exit\n2 - Empty map\n3 - 16 x 16 map")
+        num = int(input())
+        print("Which algorithm do you want to use?\n0 - Right hand algorithm")
+        num2 = int(input())
+        if num not in range(len(maps)) or num2 not in range(len(algo)):
+            print('Wrong choice')
+        else:
+            robot = make_robot(maps[num])
+            interpreter = Interpreter()
+            prog = open(algo[num2], 'r').read()
+            res = interpreter.interpreter(robot=robot, program=prog)
+            if res:
+                print('Result symbol table:')
+                for key, value in interpreter.symbol_table[0].items():
+                    print(key,'=', value)
+            if interpreter.exit:
+                print('\n###### Exit has been found!!! ######\n')
+                img = Image.open(r'C:\Users\user\Desktop\robot.jpg')
+            else:
+                print('\n###### Exit hasn\'t been found :( ######\n')
+                img = Image.open(r'C:\Users\user\Desktop\robot2.jpg')
+            print('Robo:', interpreter.robot)
+            print('Map:')
+            interpreter.robot.show()
+            # img.show()
     else:
         print('Wrong choice!\n')
