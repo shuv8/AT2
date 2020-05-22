@@ -18,7 +18,8 @@ class Error_Handler:
                       'RecursionError',
                       'ReturnError',
                       'CommandError',
-                      'RobotError']
+                      'RobotError',
+                      'SumTypesError']
 
     def call(self, error_type, node=None):
         self.type = error_type
@@ -78,6 +79,8 @@ class Error_Handler:
             sys.stderr.write(f'Inappropriate word in robot command at line {self.node.lineno}\n')
         elif self.type == 13:
             sys.stderr.write(f'There are no robot to execute this command at line {self.node.lineno}\n')
+        elif self.type == 14:
+            sys.stderr.write(f'Types of expressions doesn\'t match in addition at line {self.node.lineno}\n')
 
 
 class InterpreterConvertationError(Exception):
@@ -113,4 +116,8 @@ class InterpreterIndexNumError(Exception):
 
 
 class InterpreterRecursionError(Exception):
+    pass
+
+
+class InterpreterSumTypesError(Exception):
     pass
