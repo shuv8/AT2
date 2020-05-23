@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="522d7431-aa16-4c35-ba74-ea0ad5f2cb64" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Data/16x16.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/empty_map.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/errors.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/map_without_exit.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/right_hand.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/simple_map.txt" afterDir="false" />
+    <list default="true" id="522d7431-aa16-4c35-ba74-ea0ad5f2cb64" name="Default Changelist" comment="Interpreter 1.1&#10;-Everything works (I hope)">
+      <change afterPath="$PROJECT_DIR$/Data/Pledge_algo.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/fibonacci.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/simple_island.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/start_in_center.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/two_islands.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Errors/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/errors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Robot/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Robot/robot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Parser/parser.out" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Parser/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Parser/parsetab.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parsetab.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/interpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/interpreter.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -151,41 +152,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1587970949147</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Parser 0.2&#10;-Some syntax errors handling added&#10;-Some more rules added">
-      <created>1589133037677</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1589133037677</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Parser 0.3&#10;-More syntax errors handling added&#10;-More rules added&#10;-Functions rule added">
-      <created>1589235516641</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1589235516641</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Parser 0.4&#10;-Handling of almost all syntax errors handling added&#10;-All grammar rules added">
-      <created>1589279683014</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1589279683014</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Parser 0.4.1&#10;-Manual debug commented">
-      <created>1589286636923</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1589286636923</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Error Handler 0.1&#10;-Error handler added">
-      <created>1589286731792</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1589286731792</updated>
     </task>
     <task id="LOCAL-00013" summary="Interpreter 0.1.1&#10;-Some statements handling added&#10;-Variable declaration added">
       <created>1589300995446</created>
@@ -495,7 +461,42 @@
       <option name="project" value="LOCAL" />
       <updated>1589986874568</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="Interpreter tests added">
+      <created>1590154329405</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1590154329405</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Robot maps and algorithm added">
+      <created>1590154359906</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1590154359906</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Error Handler 1.0&#10;-Error handler works">
+      <created>1590154401435</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1590154401436</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Robot 1.0&#10;-Robot works">
+      <created>1590154431489</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1590154431489</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Interpreter 1.1&#10;-Everything works (I hope)">
+      <created>1590154484317</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1590154484318</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -512,11 +513,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Interpreter 0.3.5&#10;-Addition works" />
-    <MESSAGE value="Interpreter 0.3.6&#10;-Convertation added" />
-    <MESSAGE value="Interpreter 0.3.7&#10;-&quot;While&quot; added" />
-    <MESSAGE value="Error Handler 0.1.6&#10;-Some errors fixed" />
-    <MESSAGE value="Parser 0.4.4&#10;-Digitize rule updated" />
     <MESSAGE value="Parser 0.4.5&#10;-Digitize rule updated one more time" />
     <MESSAGE value="Interpreter 0.3.8&#10;-Digitize and until added" />
     <MESSAGE value="Error Handler 0.1.7&#10;-Some fixes" />
@@ -537,14 +533,19 @@
     <MESSAGE value="Error Handler 0.2&#10;-All errors added" />
     <MESSAGE value="Robot 0.2&#10;-Moving, looking and exit check added" />
     <MESSAGE value="Interpreter 1.0&#10;-Everything except the robot works" />
-    <option name="LAST_COMMIT_MESSAGE" value="Interpreter 1.0&#10;-Everything except the robot works" />
+    <MESSAGE value="Interpreter tests added" />
+    <MESSAGE value="Robot maps and algorithm added" />
+    <MESSAGE value="Error Handler 1.0&#10;-Error handler works" />
+    <MESSAGE value="Robot 1.0&#10;-Robot works" />
+    <MESSAGE value="Interpreter 1.1&#10;-Everything works (I hope)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Interpreter 1.1&#10;-Everything works (I hope)" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="422" y="158" key="CommitChangelistDialog2" timestamp="1590154430732">
+    <state x="422" y="158" key="CommitChangelistDialog2" timestamp="1590164666310">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="583" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1589115218590" />
-    <state x="422" y="158" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1590154430732" />
+    <state x="422" y="158" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1590164666310" />
     <state x="1220" y="278" key="FileChooserDialogImpl" timestamp="1588863189923">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -553,42 +554,42 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="822" y="401" key="GitRewordDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589894766294" />
-    <state width="1899" height="433" key="GridCell.Tab.0.bottom" timestamp="1590154279316">
+    <state width="1899" height="485" key="GridCell.Tab.0.bottom" timestamp="1590231784459">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1589115047538" />
-    <state width="1899" height="433" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1590154279316" />
-    <state width="1899" height="433" key="GridCell.Tab.0.center" timestamp="1590154279316">
+    <state width="1899" height="485" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1590231784459" />
+    <state width="1899" height="485" key="GridCell.Tab.0.center" timestamp="1590231784459">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1589115047537" />
-    <state width="1899" height="433" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1590154279316" />
-    <state width="1899" height="433" key="GridCell.Tab.0.left" timestamp="1590154279315">
+    <state width="1899" height="485" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1590231784459" />
+    <state width="1899" height="485" key="GridCell.Tab.0.left" timestamp="1590231784459">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1589115047537" />
-    <state width="1899" height="433" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1590154279315" />
-    <state width="1899" height="433" key="GridCell.Tab.0.right" timestamp="1590154279316">
+    <state width="1899" height="485" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1590231784459" />
+    <state width="1899" height="485" key="GridCell.Tab.0.right" timestamp="1590231784459">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1515" height="327" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1589115047538" />
-    <state width="1899" height="433" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1590154279316" />
-    <state width="1899" height="279" key="GridCell.Tab.1.bottom" timestamp="1590151941338">
+    <state width="1899" height="485" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1590231784459" />
+    <state width="1899" height="275" key="GridCell.Tab.1.bottom" timestamp="1590226569017">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="279" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1590151941338" />
-    <state width="1899" height="279" key="GridCell.Tab.1.center" timestamp="1590151941338">
+    <state width="1899" height="275" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1590226569017" />
+    <state width="1899" height="275" key="GridCell.Tab.1.center" timestamp="1590226569017">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="279" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1590151941338" />
-    <state width="1899" height="279" key="GridCell.Tab.1.left" timestamp="1590151941338">
+    <state width="1899" height="275" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1590226569017" />
+    <state width="1899" height="275" key="GridCell.Tab.1.left" timestamp="1590226569017">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="279" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1590151941338" />
-    <state width="1899" height="279" key="GridCell.Tab.1.right" timestamp="1590151941338">
+    <state width="1899" height="275" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1590226569017" />
+    <state width="1899" height="275" key="GridCell.Tab.1.right" timestamp="1590226569017">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="279" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1590151941338" />
+    <state width="1899" height="275" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1590226569017" />
     <state x="754" y="242" key="RollbackChangesDialog" timestamp="1589726349072">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -605,37 +606,30 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="807" y="436" key="VCS.ChangelistChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1589894785871" />
-    <state x="560" y="357" key="Vcs.Push.Dialog.v2" timestamp="1590154432800">
+    <state x="560" y="357" key="Vcs.Push.Dialog.v2" timestamp="1590154486955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1589115224437" />
-    <state x="560" y="357" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1590154432800" />
+    <state x="560" y="357" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1590154486955" />
     <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1589894656037">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1589894656037" />
-    <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1590129421100">
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1590223530975">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1590129421100" />
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1590223530975" />
     <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1589726338725">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589726338725" />
-    <state x="616" y="173" width="670" height="676" key="search.everywhere.popup" timestamp="1589270870666">
+    <state x="616" y="173" width="672" height="676" key="search.everywhere.popup" timestamp="1590231757662">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="616" y="173" width="670" height="676" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1589270870666" />
+    <state x="616" y="173" width="672" height="676" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1590231757662" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/interpreter.py</url>
-          <line>529</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

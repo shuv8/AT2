@@ -257,11 +257,13 @@ class Parser(object):
         p[0] = p[1]
 
     def p_while(self, p):
-        """while : WHILE bool_expression NEWLINE statements ENDW"""
+        """while : WHILE bool_expression NEWLINE statements ENDW
+                | WHILE bool_expression NEWLINE func_body_statements ENDW"""
         p[0] = TreeNode('while', children={'condition': p[2], 'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_until(self, p):
-        """until : UNTIL bool_expression NEWLINE statements ENDU"""
+        """until : UNTIL bool_expression NEWLINE statements ENDU
+                | UNTIL bool_expression NEWLINE func_body_statements ENDU"""
         p[0] = TreeNode('until', children={'condition': p[2], 'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
 
     def p_if(self, p):
@@ -271,7 +273,15 @@ class Parser(object):
               | IFNZERO decimal_expression NEWLINE statements ENDIF
               | IFHIGH decimal_expression COMMA decimal_expression NEWLINE statements ENDIF
               | IFNHIGH decimal_expression COMMA decimal_expression NEWLINE statements ENDIF
-              | IFEQUAL string_expression COMMA string_expression NEWLINE statements ENDIF"""
+              | IFEQUAL string_expression COMMA string_expression NEWLINE statements ENDIF
+
+              | IFLESS decimal_expression COMMA decimal_expression NEWLINE func_body_statements ENDIF
+              | IFNLESS decimal_expression COMMA decimal_expression NEWLINE func_body_statements ENDIF
+              | IFZERO decimal_expression NEWLINE func_body_statements ENDIF
+              | IFNZERO decimal_expression NEWLINE func_body_statements ENDIF
+              | IFHIGH decimal_expression COMMA decimal_expression NEWLINE func_body_statements ENDIF
+              | IFNHIGH decimal_expression COMMA decimal_expression NEWLINE func_body_statements ENDIF
+              | IFEQUAL string_expression COMMA string_expression NEWLINE func_body_statements ENDIF"""
         if len(p) == 6:
             p[0] = TreeNode('if', children={'condition': TreeNode('condition', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1)),
                                         'conditional_expressions': TreeNode('conditional_expressions', children=p[2], lineno=p.lineno(2), lexpos=p.lexpos(2)),
@@ -386,6 +396,9 @@ class Parser(object):
         """while : WHILE error NEWLINE statements ENDW
                     | WHILE bool_expression NEWLINE statements error
                     | WHILE bool_expression statements ENDW
+                    | WHILE error NEWLINE func_body_statements ENDW
+                    | WHILE bool_expression NEWLINE func_body_statements error
+                    | WHILE bool_expression func_body_statements ENDW
                     | while error"""
         if len(p) == 6:
             p[0] = TreeNode('while_error', value='While error', children={'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
@@ -406,6 +419,9 @@ class Parser(object):
         """until : UNTIL error NEWLINE statements ENDU
                     | UNTIL bool_expression NEWLINE statements error
                     | UNTIL bool_expression statements ENDU
+                    | UNTIL error NEWLINE func_body_statements ENDU
+                    | UNTIL bool_expression NEWLINE func_body_statements error
+                    | UNTIL bool_expression func_body_statements ENDU
                     | until error"""
         if len(p) == 6:
             p[0] = TreeNode('until_error', value='Until error', children={'body': p[4]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
