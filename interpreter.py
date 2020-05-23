@@ -17,6 +17,7 @@ from Errors.errors import InterpreterIndexNumError
 from Errors.errors import InterpreterRecursionError
 from Errors.errors import InterpreterSumTypesError
 
+
 class Variant:
     def __init__(self, first_size=1, second_size=0):
         self.first_size = first_size
@@ -119,7 +120,9 @@ class Interpreter:
                             'ReturnError': 11,
                             'CommandError': 12,
                             'RobotError': 13,
-                            'SumTypesError': 14}
+                            'SumTypesError': 14,
+                            'FuncStatementsError': 15,
+                            'FuncDescriptionError': 16}
 
     def interpreter(self, program=None, robot=None, tree_print=False):
         self.program = program
@@ -135,6 +138,7 @@ class Interpreter:
             sys.stderr.write(f'Can\'t interpretate this program. Incorrect syntax!\n')
             return False
 
+    @staticmethod
     def interpreter_tree(self, tree):
         print("Program tree:\n")
         tree.print()
@@ -488,7 +492,9 @@ class Interpreter:
                 if self.interpreter_node(node.children['conditional_expressions'].children[0]) == self.interpreter_node(node.children['conditional_expressions'].children[1]):
                     self.interpreter_node(node.children['body'])
         elif node.type == 'func_descriptor':
-            pass
+            if self.scope != 0:
+                self.correct = False
+                self.error.call(self.error_types['FuncDescriptionError'], node)
         elif node.type == 'function_call':
             if node.children is not None:
                 try:
@@ -518,7 +524,10 @@ class Interpreter:
                 res = 0
             return res
         elif node.type == 'return':
-            if '#RETURN' in self.symbol_table[self.scope].keys():
+            if self.scope == 0:
+                self.error.call(self.error_types['FuncStatementsError'], node)
+                self.correct = False
+            elif '#RETURN' in self.symbol_table[self.scope].keys():
                 pass
             else:
                 self.symbol_table[self.scope]['#RETURN'] = self.interpreter_node(node.children)
@@ -817,6 +826,7 @@ class Interpreter:
                     elem['string'] = self.string_negation(elem['string'])
         return value
 
+    @staticmethod
     def string_negation(self, value):
         words = value.split()
         res = ''
@@ -1009,14 +1019,14 @@ def make_robot(descriptor):
 
 
 if __name__ == '__main__':
-    tests = ['Data/sum.txt', 'Data/simple_func.txt', 'Data/sort.txt', 'Data/syntax_error.txt', 'Data/errors.txt']
-    maps = ['Data/simple_map.txt', 'Data/map_without_exit.txt', 'Data/empty_map.txt', 'Data/16x16.txt']
-    algo = ['Data/right_hand.txt']
+    tests = ['Data/sum.txt', 'Data/simple_func.txt', 'Data/sort.txt', 'Data/syntax_error.txt', 'Data/errors.txt', 'Data/fibonacci.txt']
+    maps = ['Data/simple_map.txt', 'Data/map_without_exit.txt', 'Data/empty_map.txt', 'Data/16x16.txt', 'Data/simple_island.txt', 'Data/two_islands.txt', 'Data/start_in_center.txt']
+    algo = ['Data/right_hand.txt', 'Data/Pledge_algo.txt']
     print("Make your choice: 1 - test, 2 - robot")
     n = int(input())
     if n == 1:
         interpreter = Interpreter()
-        print('Which test do you want to run?\n0 - Simple addition\n1 - Simple function\n2 - Sort\n3 - Syntax errors\n4 - Interpreter errors')
+        print('Which test do you want to run?\n0 - Simple addition\n1 - Simple function\n2 - Sort\n3 - Syntax errors\n4 - Interpreter errors\n5 - Fibonacci numbers')
         num = int(input())
         if num not in range(len(tests)):
             print('Wrong choice')
@@ -1028,9 +1038,9 @@ if __name__ == '__main__':
                 for key, value in interpreter.symbol_table[0].items():
                     print(key,'=', value)
     elif n == 2:
-        print("Which map do you want to use?\n0 - Simple map\n1 - Map without exit\n2 - Empty map\n3 - 16 x 16 map")
+        print("Which map do you want to use?\n0 - Simple map\n1 - Map without exit\n2 - Empty map\n3 - 16 x 16 map\n4 - One island\n5 - Two islands\n6 - Start in center")
         num = int(input())
-        print("Which algorithm do you want to use?\n0 - Right hand algorithm")
+        print("Which algorithm do you want to use?\n0 - Right hand algorithm\n1 - Pledge algorithm")
         num2 = int(input())
         if num not in range(len(maps)) or num2 not in range(len(algo)):
             print('Wrong choice')
