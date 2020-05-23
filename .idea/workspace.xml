@@ -7,12 +7,6 @@
       <change afterPath="$PROJECT_DIR$/Data/simple_island.txt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Data/start_in_center.txt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Data/two_islands.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Errors/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/Errors/errors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parser.out" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/parsetab.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/parsetab.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/interpreter.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,27 +146,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1587970949147</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Interpreter 0.1.1&#10;-Some statements handling added&#10;-Variable declaration added">
-      <created>1589300995446</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1589300995446</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Error Handler 0.1.1&#10;-More error types added">
-      <created>1589301032577</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1589301032577</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Interpreter 0.1.2&#10;-More rules added">
-      <created>1589303833665</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1589303833665</updated>
     </task>
     <task id="LOCAL-00016" summary="Parser 0.4.2&#10;-Constants rule modified">
       <created>1589387152943</created>
@@ -496,7 +469,28 @@
       <option name="project" value="LOCAL" />
       <updated>1590154484318</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="Parser 1.1&#10;-Fixes">
+      <created>1590231821247</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1590231821248</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Error Handler 1.1&#10;-Some errors added">
+      <created>1590231854764</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1590231854764</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Interpreter 1.2&#10;-Fixes">
+      <created>1590231880391</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1590231880391</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -513,9 +507,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Parser 0.4.5&#10;-Digitize rule updated one more time" />
-    <MESSAGE value="Interpreter 0.3.8&#10;-Digitize and until added" />
-    <MESSAGE value="Error Handler 0.1.7&#10;-Some fixes" />
     <MESSAGE value="Interpreter 0.3.9&#10;-&quot;If&quot; added" />
     <MESSAGE value="Interpreter 0.4&#10;-Almost all (without commands and functions) works (I hope so :) )" />
     <MESSAGE value="Parser 0.4.6&#10;-Robot commands was added to expression rule" />
@@ -538,14 +529,17 @@
     <MESSAGE value="Error Handler 1.0&#10;-Error handler works" />
     <MESSAGE value="Robot 1.0&#10;-Robot works" />
     <MESSAGE value="Interpreter 1.1&#10;-Everything works (I hope)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Interpreter 1.1&#10;-Everything works (I hope)" />
+    <MESSAGE value="Parser 1.1&#10;-Fixes" />
+    <MESSAGE value="Error Handler 1.1&#10;-Some errors added" />
+    <MESSAGE value="Interpreter 1.2&#10;-Fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Interpreter 1.2&#10;-Fixes" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="422" y="158" key="CommitChangelistDialog2" timestamp="1590231853549">
+    <state x="422" y="158" key="CommitChangelistDialog2" timestamp="1590231879419">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="583" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1589115218590" />
-    <state x="422" y="158" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1590231853549" />
+    <state x="422" y="158" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1590231879419" />
     <state x="1220" y="278" key="FileChooserDialogImpl" timestamp="1588863189923">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -606,11 +600,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="807" y="436" key="VCS.ChangelistChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1589894785871" />
-    <state x="560" y="357" key="Vcs.Push.Dialog.v2" timestamp="1590231856278">
+    <state x="560" y="357" key="Vcs.Push.Dialog.v2" timestamp="1590231881747">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1589115224437" />
-    <state x="560" y="357" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1590231856278" />
+    <state x="560" y="357" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1590231881747" />
     <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1589894656037">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

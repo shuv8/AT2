@@ -1,0 +1,12 @@
+10 10
+3 3
+WWWWWWWWWW
+W        W
+W        W
+W  W WW  W
+W  W  W  W
+W  W  W  W
+W  WWWW  W
+W        W
+W        E
+WWWWWWWWWW

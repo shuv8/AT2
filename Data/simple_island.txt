@@ -1,0 +1,10 @@
+8 8
+3 1
+WWWWWWWW
+W      W
+W      W
+W  WW  W
+W  WW  W
+W      W
+W      E
+WWWWWWWW

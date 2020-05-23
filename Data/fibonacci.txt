@@ -1,0 +1,57 @@
+FUNC fibonacci
+VARIANT n1
+VARIANT n2
+VARIANT i
+VARIANT buf
+VARIANT eq
+VARIANT res
+eq = "not even"
+buf = TRUE
+i = PARAM[]
+n1 = 1
+n2 = 1
+IFLESS i[], 1
+RETURN 0
+ENDIF
+IFNHIGH i[], 2
+RETURN 1
+ENDIF
+i = i + -2
+IFZERO i[]
+buf = FALSE
+ENDIF
+WHILE buf
+IFEQUAL eq, "not even"
+n1[] = n1[] + n2[]
+res = n1
+ENDIF
+IFEQUAL eq, "even"
+n2[] = n1[] + n2[]
+res = n2
+ENDIF
+buf = FALSE
+IFEQUAL eq, "not even"
+UNTIL buf
+eq = "even"
+buf = TRUE
+ENDU
+ENDIF
+IFEQUAL eq, "even"
+UNTIL buf
+eq = "not even"
+buf = TRUE
+ENDU
+ENDIF
+buf = TRUE
+i[] = i[] + -1
+IFZERO i[]
+buf = FALSE
+ENDIF
+ENDW
+RETURN res
+ENDFUNC
+
+VARIANT n
+n = 9
+VARIANT fib
+fib = CALL fibonacci n
