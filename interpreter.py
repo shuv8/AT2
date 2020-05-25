@@ -970,7 +970,7 @@ class Interpreter:
         if name not in self.functions.keys():
             raise InterpreterUndeclaredError
         self.scope += 1
-        if self.scope > 100:
+        if self.scope > 75:
             self.scope -= 1
             raise InterpreterRecursionError
         self.symbol_table.append(dict())
@@ -1019,14 +1019,14 @@ def make_robot(descriptor):
 
 
 if __name__ == '__main__':
-    tests = ['Data/sum.txt', 'Data/simple_func.txt', 'Data/sort.txt', 'Data/syntax_error.txt', 'Data/errors.txt', 'Data/fibonacci.txt']
+    tests = ['Data/sum.txt', 'Data/simple_func.txt', 'Data/sort.txt', 'Data/syntax_error.txt', 'Data/errors.txt', 'Data/fibonacci.txt', 'Data/fibonacci_recursion.txt', 'Data/recursion.txt']
     maps = ['Data/simple_map.txt', 'Data/map_without_exit.txt', 'Data/empty_map.txt', 'Data/16x16.txt', 'Data/simple_island.txt', 'Data/two_islands.txt', 'Data/start_in_center.txt']
     algo = ['Data/right_hand.txt', 'Data/Pledge_algo.txt']
     print("Make your choice: 1 - test, 2 - robot")
     n = int(input())
     if n == 1:
         interpreter = Interpreter()
-        print('Which test do you want to run?\n0 - Simple addition\n1 - Simple function\n2 - Sort\n3 - Syntax errors\n4 - Interpreter errors\n5 - Fibonacci numbers')
+        print('Which test do you want to run?\n0 - Simple addition\n1 - Simple function\n2 - Sort\n3 - Syntax errors\n4 - Interpreter errors\n5 - Fibonacci numbers\n6 - Recursion Fibonacci\n7 - Recursion error')
         num = int(input())
         if num not in range(len(tests)):
             print('Wrong choice')
