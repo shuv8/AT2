@@ -1,0 +1,17 @@
+FUNC fibonacci
+VARIANT f1
+VARIANT f2
+IFNHIGH PARAM[], 2
+    f1 = 1
+ENDIF
+IFHIGH PARAM[], 2
+    f1 = CALL fibonacci PARAM[] + -1
+    f2 = CALL fibonacci PARAM[] + -2
+ENDIF
+RETURN f1 + f2
+ENDFUNC
+
+VARIANT n
+n = 20
+VARIANT res
+res = CALL fibonacci n

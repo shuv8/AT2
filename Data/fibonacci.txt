@@ -52,6 +52,6 @@ RETURN res
 ENDFUNC
 
 VARIANT n
-n = 9
+n = 20
 VARIANT fib
 fib = CALL fibonacci n

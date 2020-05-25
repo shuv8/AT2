@@ -1,0 +1,6 @@
+FUNC recursion
+RETURN CALL recursion
+ENDFUNC
+
+VARIANT a
+a = CALL recursion
